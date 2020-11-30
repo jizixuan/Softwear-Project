@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="bule">#0091FC</color>
+    <color name="gray">#DCDCDC</color>
+    <color name="grayPrimary">#A9A9A9</color>
+    <color name="txt_black_light">#333333</color>
+    <color name="bg_white">#FFFFFF</color>
+    <color name="bg_blue">#58ACED</color>
+    <color name="text_yellow">#FFC800</color>
+    <color name="lightgray">#d3d3d3</color><!--亮灰色 -->
+</resources>
