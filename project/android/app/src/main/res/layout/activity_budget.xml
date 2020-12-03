@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:text="预算"
+        android:textSize="25sp"
+        android:textColor="#000000"
+        android:background="@color/bule" />
+    <RelativeLayout
+        android:padding="15dp"
+        android:layout_width="match_parent"
+        android:layout_margin="15dp"
+        android:layout_height="wrap_content"
+        android:background="#ffffff"
+        android:id="@+id/budget">
+
+        <TextView
+            android:id="@+id/tv_budgetMonth"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="11月总预算"
+            android:textSize="20sp"
+            android:textColor="#000000" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="编辑"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp" />
+
+        <ImageView
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@mipmap/entrance"
+            android:layout_alignParentRight="true" />
+
+        <com.example.myapplication.view.Gua
+            android:id="@+id/Circle"
+            android:layout_width="125dp"
+            android:layout_height="125dp"
+            android:layout_below="@+id/tv_budgetMonth"
+            android:layout_marginLeft="20dp"
+            app:radius="175"
+            app:textColor="#000000" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_budgetMonth"
+            android:layout_marginLeft="44dp"
+            android:layout_marginTop="33dp"
+            android:layout_toRightOf="@+id/Circle"
+            android:text="剩余预算："
+            android:textColor="#000000"
+            android:textSize="15sp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_budgetMonth"
+            android:layout_marginLeft="43dp"
+            android:layout_marginTop="68dp"
+            android:layout_toRightOf="@+id/Circle"
+            android:text="本月预算：" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_budgetMonth"
+            android:layout_marginLeft="46dp"
+            android:layout_marginTop="101dp"
+            android:layout_toRightOf="@+id/Circle"
+            android:text="本月支出：" />
+
+        <TextView
+            android:id="@+id/tv_budget"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_budgetMonth"
+            android:layout_marginLeft="198dp"
+            android:layout_marginTop="34dp"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="20dp"
+            android:text="6000"
+            android:textColor="#000000"
+            android:textSize="15sp" />
+
+        <TextView
+            android:id="@+id/tv_budget1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_budget"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="14dp"
+            android:layout_marginRight="20dp"
+            android:text="5000" />
+        <TextView
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:text="—————————————————"
+            android:layout_below="@+id/tv_budget"
+            android:layout_alignParentRight="true"/>
+        <TextView
+            android:id="@+id/tv_personalOut"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/tv_budget"
+            android:layout_alignParentRight="true"
+            android:layout_marginTop="46dp"
+            android:layout_marginRight="21dp"
+            android:text="5000" />
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="8dp"
+        android:background="@color/grayPrimary"/>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/main_view"/>
+</LinearLayout>
+

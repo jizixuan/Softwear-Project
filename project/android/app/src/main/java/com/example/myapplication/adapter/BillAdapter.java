@@ -1,6 +1,7 @@
 package com.example.myapplication.adapter;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,6 @@ public class BillAdapter extends BaseAdapter {
     public void addAll(List<BillItem> bills){
         this.bills=bills;
         notifyDataSetChanged();
-
     }
     public void clearAll() {
         this.bills.clear();
@@ -73,7 +73,12 @@ public class BillAdapter extends BaseAdapter {
             holder= (ViewHolder) view.getTag();
         }
         holder.type.setText(bills.get(position).getType());
-        holder.num.setText(bills.get(position).getNum()+"");
+        String numType=bills.get(position).getNumType();
+        if(numType.equals("-")) {
+            holder.num.setText(numType + bills.get(position).getNum());
+        }else{
+            holder.num.setText(bills.get(position).getNum()+"");
+        }
         Glide.with(mContext)
                 .load(bills.get(position).getImg())
                 .into(holder.img);

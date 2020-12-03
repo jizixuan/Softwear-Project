@@ -17,8 +17,6 @@ import android.widget.TextView;
 import com.example.myapplication.adapter.InOrOutDetailAdapter;
 import com.example.myapplication.entity.IoDetail;
 import com.example.myapplication.util.ConfigUtil;
-import com.example.myapplication.util.NumSort;
-import com.example.myapplication.util.NumSortInOrOut;
 
 import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
@@ -26,7 +24,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
@@ -85,13 +82,12 @@ public class InOrOutDetailActivity extends AppCompatActivity {
      * @param month
      */
     private void getData(String year, String month, final String info) {
-        IoDetail io1=new IoDetail(BitmapFactory.decodeResource(getResources(),R.mipmap.type_shopping),"食品",new Date(),99.00);
-        IoDetail io2=new IoDetail(BitmapFactory.decodeResource(getResources(),R.mipmap.type_shopping),"饮料",new Date(),100.00);
-        IoDetail io3=new IoDetail(BitmapFactory.decodeResource(getResources(),R.mipmap.type_shopping),"文具",new Date(),97.00);
+        IoDetail io1=new IoDetail(BitmapFactory.decodeResource(getResources(),R.mipmap.type_shopping),"食品",new Date(),99.00,19.6,(float) 100);
+        IoDetail io2=new IoDetail(BitmapFactory.decodeResource(getResources(),R.mipmap.type_shopping),"饮料",new Date(),99.00,16.2,(float) 88.6);
+        IoDetail io3=new IoDetail(BitmapFactory.decodeResource(getResources(),R.mipmap.type_shopping),"文具",new Date(),99.00,13.1,(float) 66.4);
         ioDetails.add(io1);
         ioDetails.add(io2);
         ioDetails.add(io3);
-        Collections.sort(ioDetails,new NumSortInOrOut());
         InOrOutDetailAdapter adapter=new InOrOutDetailAdapter(ioDetails,getApplicationContext(),R.layout.io_detail);
         lv.setAdapter(adapter);
         //设置点击事件

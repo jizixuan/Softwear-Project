@@ -9,30 +9,39 @@
     tools:context=".AddBillActivity">
 
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/centre_button_color"
-        android:orientation="vertical">
+        android:layout_height="55dp"
+        android:orientation="horizontal"
+        android:background="@color/centre_button_color">
+
+
 
         <com.flyco.tablayout.SlidingTabLayout
+            android:layout_centerInParent="true"
             android:id="@+id/add_tl"
             android:layout_width="wrap_content"
             android:layout_height="55dp"
             android:background="@color/centre_button_color"
-            android:layout_gravity="center_horizontal"
             tl:tl_textAllCaps="true"
             tl:tl_tab_width="90dp"
             tl:tl_textBold="BOTH"
             tl:tl_textsize="20sp"/>
-
-
-
-    </LinearLayout>
-
+        <TextView
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="15dp"
+            android:id="@+id/add_bill_tv"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="取消"
+            android:textSize="20sp"
+            android:textColor="@android:color/white"/>
+    </RelativeLayout>
     <androidx.viewpager.widget.ViewPager
         android:id="@+id/add_vp"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
+
 
 </LinearLayout>

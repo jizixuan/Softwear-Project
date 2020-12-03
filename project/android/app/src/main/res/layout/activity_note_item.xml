@@ -108,7 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:id="@+id/ti2_note"
-                    android:drawableTop="@mipmap/scan_noteitem"
+                    android:drawableTop="@mipmap/save"
                     android:gravity="center"
                     android:text="保存"/>
             </RelativeLayout>

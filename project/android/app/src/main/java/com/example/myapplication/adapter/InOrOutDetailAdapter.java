@@ -84,23 +84,10 @@ public class InOrOutDetailAdapter extends BaseAdapter {
         //设置图片
         holder.img.setImageBitmap(ioDetails.get(position).getImg());
         //设置百分比
-        int count = 0;
-        for(int j=0;j<ioDetails.size();j++){
-            count+=ioDetails.get(j).getNum();
-        }
-        double c = (ioDetails.get(position).getNum()/count)*100;
-        java.text.DecimalFormat myformat=new java.text.DecimalFormat("0.00");
-        java.text.DecimalFormat df = new java.text.DecimalFormat("0");
-        String str2 = myformat.format(c);
-        String str1 = df.format(c);
-        holder.percentage.setText(str2+"%");
+        holder.percentage.setText(ioDetails.get(position).getPercent()+"%");
         //设置进度条百分比
 //        holder.progress.setPercent( ioDetails.get(position).getProgress());
-        if(position == 0){
-            holder.progress.setSmoothPercent(1,800);
-        }else{
-            holder.progress.setSmoothPercent((float) Integer.parseInt(str1)/100,800);
-        }
+        holder.progress.setSmoothPercent(ioDetails.get(position).getProgress()/100,800);
         return view;
     }
     private class ViewHolder{

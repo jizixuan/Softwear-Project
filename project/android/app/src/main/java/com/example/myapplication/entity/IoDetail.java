@@ -9,16 +9,20 @@ public class IoDetail {
     private String type;
     private Date date;
     private double num;
+    private double percent;
+    private float progress;
     private String note;
 
     public IoDetail() {
     }
 
-    public IoDetail(Bitmap img, String type, Date date, double num) {
+    public IoDetail(Bitmap img, String type, Date date, double num, double percent, float progress) {
         this.img = img;
         this.type = type;
         this.date = date;
         this.num = num;
+        this.percent = percent;
+        this.progress = progress;
     }
 
     public String getNote() {
@@ -27,6 +31,14 @@ public class IoDetail {
 
     public void setNote(String note) {
         this.note = note;
+    }
+
+    public float getProgress() {
+        return progress;
+    }
+
+    public void setProgress(float progress) {
+        this.progress = progress;
     }
 
     public Bitmap getImg() {
@@ -61,6 +73,13 @@ public class IoDetail {
         this.num = num;
     }
 
+    public double getPercent() {
+        return percent;
+    }
+
+    public void setPercent(double percent) {
+        this.percent = percent;
+    }
 
     @Override
     public String toString() {
@@ -69,6 +88,8 @@ public class IoDetail {
                 ", type='" + type + '\'' +
                 ", date=" + date +
                 ", num=" + num +
+                ", percent=" + percent +
+                ", progress=" + progress +
                 '}';
     }
 }

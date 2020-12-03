@@ -178,57 +178,59 @@
                 android:text="便签" />
         </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:background="@android:color/white"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
+    <com.scwang.smartrefresh.layout.SmartRefreshLayout
+        android:id="@+id/srl"
+        android:layout_weight="1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
-        <com.scwang.smartrefresh.layout.SmartRefreshLayout
-            android:id="@+id/srl"
+        <com.scwang.smartrefresh.layout.header.ClassicsHeader
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
-            <com.scwang.smartrefresh.layout.header.ClassicsHeader
+            android:layout_height="wrap_content"
+            app:srlTextFailed="加载失败"
+            app:srlTextFinish="加载完成"
+            app:srlTextLoading="正在加载..."
+            app:srlTextPulling="下拉查看下月数据"
+            app:srlTextRefreshing="正在获取数据..."
+            app:srlTextRelease="松开查看下月数据"
+            app:srlTextSecondary="释放进入二楼"
+            app:srlTextUpdate="" />
+        <LinearLayout
+            android:background="@android:color/black"
+            android:layout_marginLeft="10dp"
+            android:layout_marginRight="10dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ScrollView
+                android:id="@+id/sv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:srlTextPulling="下拉查看下月数据"
-                app:srlTextLoading="正在加载..."
-                app:srlTextRelease="松开查看下月数据"
-                app:srlTextFinish="加载完成"
-                app:srlTextFailed="加载失败"
-                app:srlTextUpdate=""
-                app:srlTextSecondary="释放进入二楼"
-                app:srlTextRefreshing="正在获取数据..."/>
+                android:scrollbars="none">
+
+
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
-                    <ScrollView
-                        android:id="@+id/sv"
+
+                    <ListView
+                        android:id="@+id/lv"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:scrollbars="none">
-                        <LinearLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content">
-
-                            <ListView
-                                android:background="@android:color/white"
-                                android:id="@+id/lv"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
-                        </LinearLayout>
-                    </ScrollView>
+                        android:background="@android:color/white" />
                 </LinearLayout>
-            <com.scwang.smartrefresh.layout.footer.ClassicsFooter
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srlTextPulling="上拉查看下月数据"
-                app:srlTextRelease="松开查看下月数据"
-                app:srlTextLoading="正在加载…"
-                app:srlTextRefreshing="正在获取数据…"
-                app:srlTextFinish="加载完成"
-                app:srlTextFailed="加载失败"
-                app:srlTextNothing="没有更多数据了"/>
-        </com.scwang.smartrefresh.layout.SmartRefreshLayout>
-    </LinearLayout>
+            </ScrollView>
+        </LinearLayout>
+        <com.scwang.smartrefresh.layout.footer.ClassicsFooter
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:srlTextFailed="加载失败"
+            app:srlTextFinish="加载完成"
+            app:srlTextLoading="正在加载…"
+            app:srlTextNothing="没有更多数据了"
+            app:srlTextPulling="上拉查看下月数据"
+            app:srlTextRefreshing="正在获取数据…"
+            app:srlTextRelease="松开查看下月数据" />
+    </com.scwang.smartrefresh.layout.SmartRefreshLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="50dp"/>
 </LinearLayout>

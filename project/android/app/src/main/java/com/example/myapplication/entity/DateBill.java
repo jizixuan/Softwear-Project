@@ -50,4 +50,14 @@ public class DateBill {
     public void setExpenditure(double expenditure) {
         this.expenditure = expenditure;
     }
+
+    @Override
+    public String toString() {
+        return "DateBill{" +
+                "date=" + date +
+                ", income=" + income +
+                ", expenditure=" + expenditure +
+                ", bills=" + bills +
+                '}';
+    }
 }

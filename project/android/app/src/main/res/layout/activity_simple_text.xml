@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_alignParentBottom="true">
+        <Button
+            android:id="@+id/take_a_photo"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="拍照"
+            android:background="@drawable/confirm_button_selector"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:background="@color/gray"/>
+        <Button
+            android:id="@+id/select_a_photo"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="标准扫描"
+            android:background="@drawable/confirm_button_selector"/>
+        <View
+            android:layout_width="1dp"
+            android:layout_height="50dp"
+            android:background="@color/gray"/>
+        <Button
+            android:id="@+id/enhanced_photo"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="精准扫描"
+            android:background="@drawable/confirm_button_selector"/>
+    </LinearLayout>
+
+    <TextView
+        android:layout_marginTop="50dp"
+        android:gravity="center"
+        android:id="@+id/info_text_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="扫描后的内容"/>
+    <TextView
+        android:id="@+id/textview"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:text="扫描图片"
+        android:textSize="18sp"
+        android:textColor="#000000"
+        android:background="@color/bule" />
+
+    <ImageView
+        android:id="@+id/img_back1"
+        android:layout_width="27dp"
+        android:layout_height="27dp"
+        android:background="@drawable/back"
+        android:layout_marginTop="10dp"
+        android:layout_marginStart="15dp"/>
+</RelativeLayout>

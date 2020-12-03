@@ -1,9 +1,14 @@
 package com.example.myapplication.adapter;
 
+import android.content.Context;
+import android.content.res.Resources;
+import android.graphics.drawable.Drawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -16,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BillTypeAdapter  extends RecyclerView.Adapter<BillTypeAdapter.ViewHolder>{
-    private BillTypeAdapter.OnItemClickListener onItemClickListener;
+    private onRecyclerItemClickerListener m_listener;
 
     private List<BillType> billTypes=new ArrayList<>();
 
@@ -27,10 +32,10 @@ public class BillTypeAdapter  extends RecyclerView.Adapter<BillTypeAdapter.ViewH
     /**
      * 设置回调监听
      *
-     * @param listener
+     * @param
      */
-    public void setOnItemClickListener(BillTypeAdapter.OnItemClickListener listener) {
-        this.onItemClickListener = listener;
+    public void setItemListener(onRecyclerItemClickerListener mListener) {
+        this.m_listener = mListener;
     }
 
     @NonNull
@@ -45,6 +50,16 @@ public class BillTypeAdapter  extends RecyclerView.Adapter<BillTypeAdapter.ViewH
     public void onBindViewHolder(@NonNull BillTypeAdapter.ViewHolder holder, int position) {
         holder.typeName.setText(billTypes.get(position).getName());
         holder.img.setImageBitmap(billTypes.get(position).getImg());
+        holder.ll.setOnClickListener(getOnClickListener(position));
+        Resources resources = holder.context.getResources();
+        Drawable drawable = resources.getDrawable(R.drawable.my_back);
+        Drawable drawable1 = resources.getDrawable(R.drawable.my_back1);
+        if (position == getmPosition()) {
+            holder.rl.setBackground(drawable1);
+        }else{
+//            否则的话就全白色初始化背景
+            holder.rl.setBackground(drawable);
+        }
     }
 
     @Override
@@ -56,15 +71,40 @@ public class BillTypeAdapter  extends RecyclerView.Adapter<BillTypeAdapter.ViewH
 
         TextView typeName;
         ImageView img;
+        LinearLayout ll;
+        RelativeLayout rl;
+        Context context;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             typeName=itemView.findViewById(R.id.bill_type_name);
             img=itemView.findViewById(R.id.bill_type_img);
+            ll=itemView.findViewById(R.id.bill_type);
+            rl=itemView.findViewById(R.id.bill_type_rl);
+            context=itemView.getContext();
         }
     }
-    public interface OnItemClickListener {
-        void onItemClick(View view, int position);
-        void onItemLongClick(View view, int position);
+    public interface onRecyclerItemClickerListener {
+        void onRecyclerItemClick(View view, Object data, int position);
+    }
+    private View.OnClickListener getOnClickListener(final int position) {
+        return new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (m_listener != null && v != null) {
+                    m_listener.onRecyclerItemClick(v, billTypes.get(position), position);
+                }
+
+            }
+        };
+    }
+    private  int mPosition=-1;
+
+    public int getmPosition() {
+        return mPosition;
+    }
+
+    public void setmPosition(int mPosition) {
+        this.mPosition = mPosition;
     }
 }

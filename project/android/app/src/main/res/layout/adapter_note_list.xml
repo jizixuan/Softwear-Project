@@ -11,8 +11,6 @@
         android:layout_weight="1"
         android:textSize="20sp"
         android:padding="5dp"
-        android:maxLines="1"
-        android:ellipsize="end"
         android:textStyle="bold"
         android:text="11"/>
     <TextView

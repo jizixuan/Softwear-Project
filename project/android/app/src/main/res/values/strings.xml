@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">JPTabBar</string>
+    <string name="app_name">校园账单</string>
     <string name="tab1">徽章测试</string>
     <string name="tab2">动画类型</string>
     <string name="tab3">特殊设置</string>

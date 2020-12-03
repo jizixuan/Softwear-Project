@@ -5,14 +5,18 @@ import android.app.ActivityOptions;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import com.example.myapplication.AddBillActivity;
 import com.example.myapplication.BillDetailsActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.entity.BillItem;
@@ -33,7 +37,8 @@ public class DateAdapter extends BaseAdapter {
     private List<DateBill> dateBills=new ArrayList<>();
     private Context mContext;
     private int layout;
-    private BillAdapter daAdapter;
+    public ViewHolder holder;
+
 
     public DateAdapter() {
     }
@@ -42,7 +47,6 @@ public class DateAdapter extends BaseAdapter {
         this.dateBills = dateBills;
         this.mContext = mContext;
         this.layout = layout;
-        daAdapter=new BillAdapter(mContext);
     }
 
     @Override
@@ -69,7 +73,7 @@ public class DateAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View view, ViewGroup viewGroup) {
         //获取组件
-        ViewHolder holder=null;
+        holder=null;
         if(null==holder){
             //加载item的布局文件
             LayoutInflater inflater=LayoutInflater.from(mContext);
@@ -99,8 +103,9 @@ public class DateAdapter extends BaseAdapter {
         //设置支出
         holder.lvExpenditure.setText(dateBills.get(position).getExpenditure()+"");
         //设置子listview
-        daAdapter.addAll(dateBills.get(position).getBills());
-        holder.listView.setAdapter(daAdapter);
+        holder.daAdapter=new BillAdapter(mContext);
+        holder.daAdapter.addAll(dateBills.get(position).getBills());
+        holder.listView.setAdapter(holder.daAdapter);
         ConfigUtil.setListViewHeightBasedOnChildren(holder.listView);
         holder.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -122,14 +127,50 @@ public class DateAdapter extends BaseAdapter {
 //                mContext.startActivity(intent);
             }
         });
+        final ViewHolder finalHolder = holder;
+        holder.listView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, final View view, final int i, long l) {
+                PopupMenu popupMenu=new PopupMenu(view.getContext(),view);//1.实例化PopupMenu
+                popupMenu.getMenuInflater().inflate(R.menu.bill_operate_menu,popupMenu.getMenu());//2.加载Menu资源
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @Override
+                    public boolean onMenuItemClick(MenuItem menuItem) {
+                        switch (menuItem.getItemId()){
+                            case R.id.menu_delete:
+                                //删除该账单
+                                return true;
+                            case R.id.menu_update:
+                                //更新改账单
+                                Intent intent=new Intent();
+                                intent.setClass(view.getContext(), AddBillActivity.class);
+                                BillItem item=dateBills.get(position).getBills().get(i);
+                                intent.putExtra("numType", item.getNumType());
+                                intent.putExtra("type",item.getType());
+                                intent.putExtra("num",item.getNum());
+                                intent.putExtra("note",item.getNote());
+                                SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd");
+                                intent.putExtra("date",sdf.format(dateBills.get(position).getDate()));
+                                view.getContext().startActivity(intent);
+                                return true;
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+                return true;
+            }
+        });
+
         return view;
     }
-    private class ViewHolder{
+    public class ViewHolder{
         TextView date;
         TextView dayOfWeek;
         TextView lvIncome;
         TextView lvExpenditure;
         ListView listView;
+        BillAdapter daAdapter;
     }
 
     /**

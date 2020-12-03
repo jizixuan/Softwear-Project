@@ -2,7 +2,9 @@ package com.example.myapplication.entity;
 
 import android.graphics.Bitmap;
 
-public class BillItem {
+import java.io.Serializable;
+
+public class BillItem implements Serializable {
     private Bitmap img;
     private String type;
     private double num;
@@ -58,5 +60,16 @@ public class BillItem {
 
     public void setNum(double num) {
         this.num = num;
+    }
+
+    @Override
+    public String toString() {
+        return "BillItem{" +
+                "img=" + img +
+                ", type='" + type + '\'' +
+                ", num=" + num +
+                ", numType='" + numType + '\'' +
+                ", note='" + note + '\'' +
+                '}';
     }
 }

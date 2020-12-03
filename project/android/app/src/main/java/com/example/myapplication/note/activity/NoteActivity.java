@@ -1,18 +1,15 @@
 package com.example.myapplication.note.activity;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.viewpager.widget.ViewPager;
 
-import android.app.Activity;
-import android.app.ActivityOptions;
 import android.app.AlarmManager;
-import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -32,14 +29,12 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
-import com.example.myapplication.IconItemActivity;
 import com.example.myapplication.MainActivity;
 import com.example.myapplication.R;
 import com.example.myapplication.adapter.IconAdapter;
@@ -51,7 +46,6 @@ import com.example.myapplication.util.ConfigUtil;
 import com.example.myapplication.util.NumSort;
 import com.example.myapplication.util.Utility;
 
-import java.io.ByteArrayOutputStream;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -66,12 +60,12 @@ public class NoteActivity extends AppCompatActivity {
 
     private ImageView re;
     //提醒
-    private TextView remind;
+    private ImageView remind;
     //扫描
-    private TextView scan;
+    private ImageView scan;
     //听写
-    private TextView listen;
-    private TextView table;
+    private ImageView listen;
+    private ImageView table;
     private ListView list;
     private ScrollView sv;
     private NoteAdapter dateAdapter;
@@ -116,6 +110,7 @@ public class NoteActivity extends AppCompatActivity {
         scan.setOnClickListener(listener);
         listen.setOnClickListener(listener);
         table.setOnClickListener(listener);
+
     }
     /**
      * 放数据
@@ -164,7 +159,7 @@ public class NoteActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        //listView长按事件
+        //stView长按事件
         list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
 
             @Override
@@ -200,7 +195,7 @@ public class NoteActivity extends AppCompatActivity {
                 });
 
                 builder.create().show();
-                return false;
+                return true;
             }
         });
         ConfigUtil.setListViewHeightBasedOnChildren(list);
@@ -234,6 +229,8 @@ public class NoteActivity extends AppCompatActivity {
                     startActivity(intent);
                     break;
                 case R.id.ti1://扫描
+                    Intent intent2 = new Intent(NoteActivity.this,SimpleTextActivity.class);
+                    startActivity(intent2);
                     break;
                 case R.id.ti2://听写
                     break;
@@ -317,5 +314,17 @@ public class NoteActivity extends AppCompatActivity {
                 break;
         }
         return week;
+    }
+    /**
+     * 解析日期选择控件获得数据
+     * @param date
+     * @return
+     */
+    private String[] getTime(Date date) {//可根据需要自行截取数据显示
+        Log.d("getTime()", "choice date millis: " + date.getTime());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat format1 = new SimpleDateFormat("HH:mm");
+        String[] str = {format.format(date),format1.format(date)};
+        return str;
     }
 }

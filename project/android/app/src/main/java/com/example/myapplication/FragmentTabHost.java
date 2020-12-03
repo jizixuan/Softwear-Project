@@ -1,5 +1,6 @@
 package com.example.myapplication;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -10,6 +11,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
+import com.example.myapplication.fragment.PersonalFragment;
 import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
 import com.luseen.spacenavigation.SpaceOnClickListener;
@@ -19,6 +21,7 @@ public class FragmentTabHost extends AppCompatActivity {
     private Fragment currentFragment = new Fragment();
     private MainActivity mainActivity;
     private IconActivity iconActivity;
+    private PersonalFragment personalFragment;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_fragment_tab_host);
@@ -44,7 +47,10 @@ public class FragmentTabHost extends AppCompatActivity {
                 Log.d("onCentreButtonClick ", "onCentreButtonClick");
                 Intent intent=new Intent();
                 intent.setClass(getApplicationContext(),AddBillActivity.class);
-                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(FragmentTabHost.this).toBundle());
+//                startActivity(intent, ActivityOptions.makeSceneTransitionAnimation(FragmentTabHost.this).toBundle());
+                startActivityForResult(intent,1);
+                overridePendingTransition(R.anim.slide_in_bottom,
+                        R.anim.slide_out_top);
             }
 
             @Override
@@ -80,6 +86,7 @@ public class FragmentTabHost extends AppCompatActivity {
                 }
                 currentFragment=mainActivity;
                 break;
+
             case 1:
                 //显示对应Fragment
                 if(iconActivity == null){
@@ -88,6 +95,17 @@ public class FragmentTabHost extends AppCompatActivity {
                             "icon");
                 }else {
                     mTransaction.show(iconActivity);
+                }
+                currentFragment=iconActivity;
+                break;
+            case 3:
+                //显示对应Fragment
+                if(personalFragment == null){
+                     personalFragment= new PersonalFragment();
+                    mTransaction.add(R.id.frame_layout, personalFragment,
+                            "personal");
+                }else {
+                    mTransaction.show(personalFragment);
                 }
                 currentFragment=iconActivity;
                 break;
@@ -102,6 +120,19 @@ public class FragmentTabHost extends AppCompatActivity {
         }
         if(iconActivity != null){
             transaction.hide(iconActivity);
+        }
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch(requestCode) {
+            case 1:
+                if(data!=null) {
+                    Log.e("lww","up");
+                    mainActivity.addItem(data.getDoubleExtra("num", 0.0), data.getStringExtra("date"),
+                            data.getStringExtra("note"), data.getStringExtra("typeName"));
+                }
+                break;
         }
     }
 }

@@ -1,18 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
-    android:padding="20dp"
+    android:id="@+id/bill_type"
+    android:layout_marginTop="15dp"
+    android:layout_marginLeft="30dp"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content"
     android:layout_height="wrap_content">
     <RelativeLayout
-        android:id="@+id/bill_item_lv"
+        android:id="@+id/bill_type_rl"
         android:layout_width="60dp"
         android:layout_height="60dp"
         android:background="@drawable/my_back">
         <ImageView
             android:layout_centerInParent="true"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
             android:id="@+id/bill_type_img"/>
     </RelativeLayout>
     <TextView

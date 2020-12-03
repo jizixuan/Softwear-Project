@@ -87,6 +87,13 @@ public class NoteItemActivity extends AppCompatActivity {
                 //存入数据库
             }
         });
+        scan.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(NoteItemActivity.this,SimpleTextActivity.class);
+                startActivity(intent);
+            }
+        });
     }
 
     private void findViews() {

@@ -41,14 +41,19 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_weight="1">
+                <ImageView
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:id="@+id/ti"
+                    android:background="@mipmap/remind"/>
                 <TextView
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/ti"
-                    android:drawableTop="@mipmap/remind"
-                    android:gravity="center"
+                    android:layout_below="@id/ti"
                     android:text="提醒"/>
             </RelativeLayout>
             <RelativeLayout
@@ -56,14 +61,19 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_weight="1">
+                <ImageView
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:id="@+id/ti1"
+                    android:background="@mipmap/scan"/>
                 <TextView
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableTop="@mipmap/scan"
-                    android:id="@+id/ti1"
-                    android:gravity="center"
+                    android:layout_below="@id/ti1"
                     android:text="扫描"/>
             </RelativeLayout>
             <RelativeLayout
@@ -71,14 +81,19 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_weight="1">
+                <ImageView
+                    android:layout_centerHorizontal="true"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:padding="5dp"
+                    android:id="@+id/ti2"
+                    android:background="@mipmap/listen"/>
                 <TextView
                     android:layout_centerHorizontal="true"
                     android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:drawableTop="@mipmap/listen"
-                    android:gravity="center"
-                    android:id="@+id/ti2"
+                    android:layout_below="@id/ti2"
                     android:text="听写"/>
             </RelativeLayout>
         </LinearLayout>
@@ -113,14 +128,19 @@
         android:layout_alignParentBottom="true"
         android:background="@drawable/topline"
         android:layout_weight="1">
+        <ImageView
+            android:layout_centerHorizontal="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="5dp"
+            android:id="@+id/ti_bottom"
+            android:background="@mipmap/table"/>
         <TextView
             android:layout_centerHorizontal="true"
             android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/ti_bottom"
-            android:drawableTop="@mipmap/table"
-            android:gravity="center"
+            android:layout_below="@id/ti_bottom"
             android:text="创建便签"/>
     </RelativeLayout>
 </RelativeLayout>
