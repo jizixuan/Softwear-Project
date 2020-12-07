@@ -66,6 +66,36 @@ public class BillItemDaoImpl {
 		}
 		return billItems;
 	}
+	public List<BillItem> getBillItemListOrderByNum(int year,int month,int userId){
+		billItems=new ArrayList<BillItem>();
+		Connection con = null;
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+		con = DbUtil.getCon();
+		String sql="select * from bill_item where year=? and month=? and user_id=? order by num desc";
+		try {
+			pstm = con.prepareStatement(sql,ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
+			pstm.setInt(1, year);
+			pstm.setInt(2, month);
+			pstm.setInt(3, userId);
+			rs = pstm.executeQuery();
+			while(rs.next()) {
+				BillItem billItem=new BillItem();
+				billItem.setId(rs.getInt("id"));
+				billItem.setTypeId(rs.getInt("type_id"));
+				billItem.setDay(rs.getInt("day"));
+				billItem.setDate(rs.getDate("date"));
+				billItem.setNote(rs.getString("note"));
+				billItem.setNum(rs.getDouble("num"));
+				billItem.setYear(year);
+				billItem.setMonth(month);
+				billItems.add(billItem);
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return billItems;
+	}
 	public boolean updateBill(BillItem billItem,int userId) {
 		Connection con = null;
 		PreparedStatement pstm = null;

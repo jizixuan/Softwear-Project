@@ -371,7 +371,10 @@ public class MainActivity extends Fragment {
                     intent.putExtra("year",tvYear.getText());
                     intent.putExtra("month",tvMonth.getText());
                     intent.putExtra("info","income");
-                    startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) root.getContext()).toBundle());
+                    intent.putExtra("incomeValue",Double.parseDouble(income.getText().toString()));
+                    startActivity(intent);
+                    getActivity().overridePendingTransition(R.anim.slide_in_right,
+                            R.anim.slide_out_left);
                     break;
                 case R.id.expenditure:
                     Intent intent1=new Intent();
@@ -379,7 +382,10 @@ public class MainActivity extends Fragment {
                     intent1.putExtra("year",tvYear.getText());
                     intent1.putExtra("month",tvMonth.getText());
                     intent1.putExtra("info","expenditure");
-                    startActivity(intent1, ActivityOptions.makeSceneTransitionAnimation((Activity) root.getContext()).toBundle());
+                    intent1.putExtra("expenditureValue",Double.parseDouble(expenditure.getText().toString()));
+                    startActivity(intent1);
+                    getActivity().overridePendingTransition(R.anim.slide_in_right,
+                            R.anim.slide_out_left);
                     break;
                 case R.id.financing:
                     Intent intent3 = new Intent();

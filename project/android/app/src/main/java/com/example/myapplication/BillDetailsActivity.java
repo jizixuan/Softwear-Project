@@ -57,7 +57,7 @@ public class BillDetailsActivity extends AppCompatActivity {
         re.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                onBackPressed();
 
             }
         });

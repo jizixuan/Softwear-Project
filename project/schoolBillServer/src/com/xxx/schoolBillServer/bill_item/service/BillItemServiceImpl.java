@@ -20,4 +20,7 @@ public class BillItemServiceImpl {
 	public boolean deleteBill(int id,int userId) {
 		return billItemDaoImpl.deleteBill(id, userId);
 	}
+	public List<BillItem> getBillItemListOrderByNum(int year,int month,int userId){
+		return billItemDaoImpl.getBillItemListOrderByNum(year, month, userId);
+	}
 }

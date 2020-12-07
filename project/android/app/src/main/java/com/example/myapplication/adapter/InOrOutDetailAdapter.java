@@ -84,9 +84,8 @@ public class InOrOutDetailAdapter extends BaseAdapter {
         //设置图片
         holder.img.setImageBitmap(ioDetails.get(position).getImg());
         //设置百分比
-        holder.percentage.setText(ioDetails.get(position).getPercent()+"%");
+        holder.percentage.setText(String.format("%.2f",ioDetails.get(position).getPercent())+"%");
         //设置进度条百分比
-//        holder.progress.setPercent( ioDetails.get(position).getProgress());
         holder.progress.setSmoothPercent(ioDetails.get(position).getProgress()/100,800);
         return view;
     }

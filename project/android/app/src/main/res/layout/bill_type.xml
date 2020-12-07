@@ -13,8 +13,8 @@
         android:background="@drawable/my_back">
         <ImageView
             android:layout_centerInParent="true"
-            android:layout_width="45dp"
-            android:layout_height="45dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:id="@+id/bill_type_img"/>
     </RelativeLayout>
     <TextView
