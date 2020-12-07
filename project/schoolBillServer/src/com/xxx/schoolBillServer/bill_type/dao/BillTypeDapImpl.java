@@ -18,7 +18,7 @@ public class BillTypeDapImpl {
 		PreparedStatement pstm = null;
 		ResultSet rs = null;
 		con = DbUtil.getCon();
-		String sql="select * from bill_type";
+		String sql="select * from bill_type order by id";
 		try {
 			pstm = con.prepareStatement(sql);
 			rs = pstm.executeQuery();
@@ -85,9 +85,9 @@ public class BillTypeDapImpl {
 		ResultSet rs = null;
 		BillType billType=new BillType();
 		con = DbUtil.getCon();
-		String sql="select img,name,num_type from bill_type where id=? limit 1";
+		String sql="select * from bill_type where id=?";
 		try {
-			pstm = con.prepareStatement(sql);
+			pstm = con.prepareStatement(sql,ResultSet.TYPE_FORWARD_ONLY, ResultSet.CONCUR_READ_ONLY);
 			pstm.setInt(1,id);
 			rs = pstm.executeQuery();
 			if(rs.next()) {

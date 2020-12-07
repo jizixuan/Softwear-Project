@@ -13,18 +13,19 @@ import javax.servlet.http.HttpServletResponse;
 
 import com.xxx.schoolBillServer.bill_item.service.BillItemServiceImpl;
 import com.xxx.schoolBillServer.bill_type.service.BillTypeServiceImpl;
+import com.xxx.schoolBillServer.entity.BillItem;
 
 /**
- * Servlet implementation class InsertBillItemServlet
+ * Servlet implementation class UpdateBillItemServlet
  */
-@WebServlet("/InsertBillItemServlet")
-public class InsertBillItemServlet extends HttpServlet {
+@WebServlet("/UpdateBillItemServlet")
+public class UpdateBillItemServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public InsertBillItemServlet() {
+    public UpdateBillItemServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -45,15 +46,28 @@ public class InsertBillItemServlet extends HttpServlet {
 		String note=request.getParameter("note");
 		String dateValue=request.getParameter("date");
 		String typeName=request.getParameter("typeName");
+		int id=Integer.parseInt(request.getParameter("id"));
 		int userId=Integer.parseInt(request.getParameter("userId"));
 		int year=Integer.parseInt(dateValue.split("/")[0]);
 		int month=Integer.parseInt(dateValue.split("/")[1]);
 		int day=Integer.parseInt(dateValue.split("/")[2]);
 		Date date=stringToDate(year+"-"+month+"-"+day,"yyyy-MM-dd");
 		int typeId=new BillTypeServiceImpl().getTypeIdByName(typeName);
-		int id=new BillItemServiceImpl().insertBillItem(num, note, date, year, month, day, typeId, userId);
+		BillItem billItem=new BillItem();
+		billItem.setDate(date);
+		billItem.setId(id);
+		billItem.setTypeId(typeId);
+		billItem.setNote(note);
+		billItem.setDay(day);
+		billItem.setMonth(month);
+		billItem.setYear(year);
+		billItem.setNum(num);
 		PrintWriter w = response.getWriter();
-		w.write(id+"");
+		if(new BillItemServiceImpl().updateBill(billItem, userId)) {
+			w.write(typeId+"");
+		}else {
+			w.write("Ê§°Ü");
+		}
 		doGet(request, response);
 	}
 	public static Date stringToDate(String dateStr, String dateFormat) {

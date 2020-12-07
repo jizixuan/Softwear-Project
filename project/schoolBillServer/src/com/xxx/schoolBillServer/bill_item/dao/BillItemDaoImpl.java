@@ -4,28 +4,37 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import com.xxx.schoolBillServer.entity.BillItem;
-import com.xxx.schoolBillServer.entity.BillType;
 import com.xxx.schoolBillServer.util.DbUtil;
 
 public class BillItemDaoImpl {
 	private List<BillItem> billItems;
-	public void insertBillItem(Double num,String note,Date date,int year,int month,int day,int typeId,int userId){
+	public int insertBillItem(Double num,String note,Date date,int year,int month,int day,int typeId,int userId){
 		Connection con = null;
 		PreparedStatement pstm = null;
 		con = DbUtil.getCon();
+		int id=-1;
 		String sql="insert into bill_item (num,note,date,year,month,day,type_id,user_id) values ("+num+",'"+note+"','"+new java.sql.Date(date.getTime())+
 				"',"+year+","+month+","+day+","+typeId+","+userId+")";
 		try {
-			pstm = con.prepareStatement(sql);
-			pstm.executeUpdate(sql);
+			pstm = con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
+			pstm.executeUpdate();
+			ResultSet rs = pstm.getGeneratedKeys(); //获取结果   
+			if (rs.next()) {
+				id = rs.getInt(1);//取得ID
+			} else {
+				System.out.println("error");
+			}
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		return id;
 	}
 	public List<BillItem> getBillItemListByDate(int year,int month,int userId){
 		billItems=new ArrayList<BillItem>();
@@ -57,4 +66,48 @@ public class BillItemDaoImpl {
 		}
 		return billItems;
 	}
+	public boolean updateBill(BillItem billItem,int userId) {
+		Connection con = null;
+		PreparedStatement pstm = null;
+		int i=-1;
+		con = DbUtil.getCon();
+		Date date=stringToDate(billItem.getYear()+"-"+billItem.getMonth()+"-"+billItem.getDay(),"yyyy-MM-dd");
+		String sql="update bill_item set num="+billItem.getNum()+",note='"+billItem.getNote()+"',date='"+new java.sql.Date(date.getTime())+"',year="+billItem.getYear()+
+				",month="+billItem.getMonth()+",day="+billItem.getDay()+",type_id="+billItem.getTypeId()+" where user_id="+userId+" and id="+billItem.getId();
+		try {
+			pstm = con.prepareStatement(sql);
+			i=pstm.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if(i>0)
+			return true;
+		else
+			return false;
+	}
+	public boolean deleteBill(int id,int userId) {
+		Connection con = null;
+		PreparedStatement pstm = null;
+		int i=-1;
+		con = DbUtil.getCon();
+		String sql="delete from bill_item where id="+id+" and user_id="+userId;
+		try {
+			pstm = con.prepareStatement(sql);
+			i=pstm.executeUpdate(sql);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		if(i>0)
+			return true;
+		else
+			return false;
+	}
+	public static Date stringToDate(String dateStr, String dateFormat) {
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+        try {
+            return formatter.parse(dateStr);
+        } catch (Exception e) {
+            return null;
+        }
+    }
 }
