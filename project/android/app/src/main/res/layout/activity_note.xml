@@ -88,39 +88,36 @@
             android:layout_width="match_parent"
             android:background="@color/grayPrimary" />
     </LinearLayout>
-    <com.example.myapplication.view.MyScrollView
+
+    <ScrollView
+        android:id="@+id/sv_note"
+        android:overScrollMode="never"
+        android:scrollbars="none"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/ll1"
-        android:id="@+id/sv_note">
+        android:layout_below="@id/ll1">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical">
-            <ListView
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/lv_note"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:divider="@android:color/transparent"
-                android:dividerHeight="10dp"
-                android:id="@+id/lv_note"/>
+                android:dividerHeight="10dp" />
         </LinearLayout>
-    </com.example.myapplication.view.MyScrollView>
-    <RelativeLayout
-        android:layout_width="match_parent"
+    </ScrollView>
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/ti_bottom"
+        android:src="@mipmap/add_note"
+        android:backgroundTint="@color/centre_button_color"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:layout_alignParentBottom="true"
-        android:background="@drawable/topline"
-        android:layout_weight="1">
-        <TextView
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="5dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/ti_bottom"
-            android:drawableTop="@mipmap/table"
-            android:gravity="center"
-            android:text="创建便签"/>
-    </RelativeLayout>
+        android:layout_alignParentRight="true"
+        android:layout_margin="20dp"
+        android:layout_gravity="bottom|start"/>
 </RelativeLayout>

@@ -1,15 +1,24 @@
 package com.example.myapplication.note.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.Dialog;
 import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextWatcher;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
@@ -26,31 +35,47 @@ import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.example.myapplication.R;
 import com.example.myapplication.note.entity.NoteItem;
+import com.example.myapplication.util.ContentToSpannableString;
+import com.example.myapplication.util.GlideImageEngine;
+import com.example.myapplication.util.UriToPathUtil;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class NoteItemActivity extends AppCompatActivity {
-
+    private GlideImageEngine glideImageEngine;
     private String date,title,note;
+    private String type;
     private EditText etTitle;
+    private int REQUEST_CODE_CHOOSE = 23;
+    private List<Uri> mSelected;
     private TextView countNum;
     private EditText etNote;
     private TextView tvDate;
     private TimePickerView pvTime;
+    private int REQUEST_PERMISSION_CODE;
     //提醒
     private TextView remind;
     //扫描
     private TextView scan;
     private TextView protect;
+    private TextView delete;
+    private FloatingActionButton actionButton;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_note_item);
+        ActivityCompat.requestPermissions(NoteItemActivity.this,
+                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO},
+                REQUEST_PERMISSION_CODE);
         findViews();
         showDatePicker();
         initdata();
@@ -85,6 +110,45 @@ public class NoteItemActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //存入数据库
+                String mContent = etNote.getText().toString();
+                String title=etTitle.getText().toString();
+                String subContent;
+                int i=title.length();
+                if(i < mContent.length()){
+                    int j = 0;
+                    for(j = 0;j < mContent.length();j++){
+                        if(mContent.charAt(j) == '\n'){
+                            break;
+                        }
+                    }
+                    subContent = mContent.substring(0,j);
+                }else{
+                    subContent = "";
+                }
+                NoteItem noteItem=new NoteItem();
+                noteItem.setContent(mContent);
+                noteItem.setTitle(title);
+                noteItem.setSubContent(subContent);
+                int id=getIntent().getIntExtra("id",0);
+                noteItem.setId(id);
+                Date date = new Date();
+                DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+                String str = format.format(date);
+                noteItem.setCreateTime(str);
+                Intent intent = new Intent();
+                Bundle bundle = new Bundle();
+                bundle.putSerializable("note",noteItem);
+                intent.putExtra("note",bundle);
+                if(type.equals("item")){
+                    //更新
+                    setResult(6,intent);
+                    finish();
+                }else if (type.equals("create")){
+                    //创建
+                    setResult(5,intent);
+                    finish();
+                }
+
             }
         });
         scan.setOnClickListener(new View.OnClickListener() {
@@ -94,9 +158,30 @@ public class NoteItemActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        actionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                callGallery();
+            }
+        });
+        delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(type.equals("item")){
+                    int id=getIntent().getIntExtra("id",0);
+                    Intent intent=new Intent();
+                    intent.putExtra("id",id);
+                    intent.putExtra("operation","delete");
+                    setResult(6,intent);
+                    finish();
+                }
+            }
+        });
     }
 
     private void findViews() {
+        delete=findViewById(R.id.ti2_delete);
+        actionButton=findViewById(R.id.button_note_new_picture);
         etTitle = findViewById(R.id.et_title);
         etNote = findViewById(R.id.edit_test);
         countNum = findViewById(R.id.tv_num);
@@ -179,13 +264,18 @@ public class NoteItemActivity extends AppCompatActivity {
         date = request.getStringExtra("date");
         title = request.getStringExtra("title");
         note = request.getStringExtra("note");
-        String type = request.getStringExtra("type");
+        type = request.getStringExtra("type");
         tvDate.setText(date);
         if(title!=null){
             etTitle.setText(title);
         }
         if(type.equals("item")){
-            etNote.setText(note);
+            //不能识别换行？？/n   replace 因为  Html.fromHtml 无法识别\n
+            SpannableString spannableString = ContentToSpannableString.Content2SpanStr(NoteItemActivity.this, note);
+
+            //不加下面这句点击没反应  可点击 字 的实现要求 注意：要位于textView.setText()的前面
+            etNote.setMovementMethod(LinkMovementMethod.getInstance());
+            etNote.setText(spannableString);
             countNum.setText(note.length()+"字");
         }else if(type.equals("create")){
             countNum.setText(0+"字");
@@ -271,5 +361,58 @@ public class NoteItemActivity extends AppCompatActivity {
         SimpleDateFormat format1 = new SimpleDateFormat("HH:mm");
         String[] str = {format.format(date),format1.format(date)};
         return str;
+    }
+    private void callGallery(){
+        glideImageEngine = new GlideImageEngine();
+
+        Matisse.from(NoteItemActivity.this)
+                .choose(MimeType.ofAll())
+                .countable(true)
+                .maxSelectable(9)
+                .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                .thumbnailScale(0.85f)
+                .imageEngine(glideImageEngine)
+                .forResult(REQUEST_CODE_CHOOSE);
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data){
+        super.onActivityResult(requestCode,resultCode,data);
+        if(resultCode == RESULT_OK){
+            if(data != null){
+                if(requestCode == 1){
+
+                }else if(requestCode == REQUEST_CODE_CHOOSE){
+                    mSelected = Matisse.obtainResult(data);
+                    Uri nSelected = mSelected.get(0);
+
+                    //用Uri的string来构造spanStr，不知道能不能获得图片
+                    //  ## +  string +  ##  来标识图片  <img src=''>
+
+                    //SpannableString spanStr = new SpannableString(nSelected.toString());
+                    SpannableString spanStr = new SpannableString("<img src='" + nSelected.toString() + "'/>");
+                    Log.d("图片Uri",nSelected.toString());
+                    String path = UriToPathUtil.getRealFilePath(this,nSelected);
+                    Log.d("图片Path",path);
+
+                    try{
+
+                        //根据Uri 获得 drawable资源
+                        Drawable drawable = Drawable.createFromStream(this.getContentResolver().openInputStream(nSelected),null);
+                        drawable.setBounds(0,0,2 * drawable.getIntrinsicWidth(),2 * drawable.getIntrinsicHeight());
+                        //BitmapDrawable bd = (BitmapDrawable) drawable;
+                        //Bitmap bp = bd.getBitmap();
+                        //bp.setDensity(160);
+                        ImageSpan span = new ImageSpan(drawable,ImageSpan.ALIGN_BASELINE);
+                        spanStr.setSpan(span,0,spanStr.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        Log.d("spanString：",spanStr.toString());
+                        int cursor = etNote.getSelectionStart();
+                        etNote.getText().insert(cursor, spanStr);
+                    }catch (Exception FileNotFoundException){
+                        Log.d("异常","无法根据Uri找到图片资源");
+                    }
+                    //Drawable drawable = NoteNewActivity.this.getResources().getDrawable(nSelected);
+                }
+            }
+        }
     }
 }

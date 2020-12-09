@@ -11,4 +11,17 @@
     <color name="bg_blue">#58ACED</color>
     <color name="text_yellow">#FFC800</color>
     <color name="lightgray">#d3d3d3</color><!--亮灰色 -->
+
+    <!--cardView 实例中的颜色-->
+    <color name="color_0">#FFF0F5</color>
+    <color name="color_1">#FFE1FF</color>
+    <color name="color_2">#E6E6FA</color>
+    <color name="color_3">#C1FFC1</color>
+    <color name="color_4">#FFF0F5</color>
+    <color name="color_5">#F0F8FF</color>
+    <color name="color_6">#E6E6FA</color>
+    <color name="color_7">#E1FFFF</color>
+    <color name="color_8">#43CD80</color>
+    <color name="color_9">#00EE00</color>
+    <color name="color_10">#F5FFFA</color>
 </resources>

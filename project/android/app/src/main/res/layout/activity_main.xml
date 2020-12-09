@@ -208,10 +208,10 @@
             android:layout_height="wrap_content">
             <ScrollView
                 android:fadingEdge="none"
-                android:overScrollMode="never"
                 android:id="@+id/sv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:overScrollMode="never"
                 android:scrollbars="none">
 
 

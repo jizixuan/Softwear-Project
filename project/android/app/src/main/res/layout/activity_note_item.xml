@@ -41,20 +41,32 @@
             android:layout_marginLeft="20dp"
             android:textColor="@color/grayPrimary"/>
     </RelativeLayout>
+
     <EditText
         android:id="@+id/edit_test"
         android:layout_width="match_parent"
         android:layout_height="500dp"
+        android:layout_below="@id/rl"
+        android:background="@android:color/white"
+        android:gravity="top"
+        android:inputType="textMultiLine"
+        android:maxLines="10"
         android:paddingStart="20dp"
         android:paddingEnd="20dp"
-        android:layout_below="@id/rl"
-        android:textSize="14.67sp"
-        android:gravity="top"
-        android:singleLine="false"
-        android:maxLines="10"
-        android:inputType="textMultiLine"
         android:scrollHorizontally="false"
-        android:background="@android:color/white" />
+        android:singleLine="false"
+        android:textSize="14.67sp" />
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/button_note_new_picture"
+        android:src="@mipmap/add_img"
+        android:backgroundTint="@color/centre_button_color"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="100dp"
+        android:layout_gravity="bottom|start"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,15 +83,16 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:layout_weight="1">
+
                 <TextView
-                    android:layout_centerHorizontal="true"
-                    android:layout_marginTop="5dp"
+                    android:id="@+id/ti_note"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:id="@+id/ti_note"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
                     android:drawableTop="@mipmap/remind_noteitem"
                     android:gravity="center"
-                    android:text="提醒"/>
+                    android:text="提醒" />
             </RelativeLayout>
             <RelativeLayout
                 android:layout_width="wrap_content"
@@ -107,11 +120,27 @@
                     android:layout_marginTop="5dp"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:id="@+id/ti2_delete"
+                    android:drawableTop="@mipmap/delete_noteitem"
+                    android:gravity="center"
+                    android:text="删除"/>
+            </RelativeLayout>
+            <RelativeLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                     android:id="@+id/ti2_note"
                     android:drawableTop="@mipmap/save"
                     android:gravity="center"
                     android:text="保存"/>
             </RelativeLayout>
+
         </LinearLayout>
     </LinearLayout>
 </RelativeLayout>
