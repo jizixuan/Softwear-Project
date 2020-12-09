@@ -10,13 +10,13 @@
             android:layout_marginLeft="10dp"
             android:id="@+id/lv_date"
             android:text="date"
-            android:textSize="18sp"
+            android:textSize="14sp"
             android:layout_marginTop="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
         <TextView
             android:text="DayofWeek"
-            android:textSize="18sp"
+            android:textSize="14sp"
             android:layout_marginTop="5dp"
             android:layout_toRightOf="@+id/lv_date"
             android:layout_marginLeft="5dp"
@@ -30,24 +30,24 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <TextView
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:text="收入："
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
                 android:id="@+id/lv_income"
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:text="收入"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:layout_marginLeft="10dp"
                 android:text="支出："
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
             <TextView
-                android:textSize="16sp"
+                android:textSize="14sp"
                 android:id="@+id/lv_expenditure"
                 android:text="支出"
                 android:layout_marginRight="10dp"

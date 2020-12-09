@@ -507,6 +507,14 @@ public class MainActivity extends Fragment {
                     billItem.setImg(type.getImg());
                     billItem.setNumType(type.getNumType());
                     billItem.setType(type.getName());
+                    //重新设置本月收入支出
+                    if(type.getNumType().equals("+")){
+                        double sum1=Double.parseDouble(income.getText().toString())+num;
+                        income.setText(sum1+"");
+                    }else{
+                        double sum2=Double.parseDouble(expenditure.getText().toString())+num;
+                        expenditure.setText(sum2+"");
+                    }
                 }
             }
             int flag=-5;
