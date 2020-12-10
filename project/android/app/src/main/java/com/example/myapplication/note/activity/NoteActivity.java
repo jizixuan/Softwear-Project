@@ -18,6 +18,8 @@ import android.content.Intent;
 import android.graphics.BitmapFactory;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.provider.ContactsContract;
 import android.transition.Explode;
 import android.util.Log;
@@ -51,11 +53,17 @@ import com.example.myapplication.note.adapter.NoteAdapter;
 import com.example.myapplication.note.entity.NoteItem;
 import com.example.myapplication.util.ConfigUtil;
 import com.example.myapplication.util.NumSort;
+import com.example.myapplication.util.ServerConfig;
 import com.example.myapplication.util.SpacesItemDecoration;
 import com.example.myapplication.util.Utility;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.navigation.NavigationView;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -65,6 +73,14 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+
 public class NoteActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener ,View.OnClickListener{
 
@@ -80,6 +96,81 @@ public class NoteActivity extends AppCompatActivity
     RecyclerView recyclerView;
     private NoteAdapter dateAdapter;
     private List<NoteItem> bills = new ArrayList<>();
+    private Handler handler=new Handler() {
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            switch (msg.what) {
+                case 1:
+                    String str= (String) msg.obj;
+                    try {
+                        JSONArray jsonArray=new JSONArray(str);
+                        for(int i=0;i<jsonArray.length();i++) {
+                            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                            NoteItem noteItem=new NoteItem();
+                            noteItem.setId(jsonObject.getInt("id"));
+                            noteItem.setCreateTime(jsonObject.getString("createTime"));
+                            noteItem.setSubContent(jsonObject.getString("subContent"));
+                            noteItem.setTitle(jsonObject.getString("title"));
+                            noteItem.setContent(jsonObject.getString("content"));
+                            bills.add(noteItem);
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    dateAdapter=new NoteAdapter(bills,NoteActivity.this);
+                    dateAdapter.setOnItemClickListener(new NoteAdapter.OnRecyclerViewItemClickListener() {
+                        @Override
+                        public void onItemClick(View view, NoteItem note) {
+                            Intent intent = new Intent(NoteActivity.this,NoteItemActivity.class);
+                            intent.putExtra("date",note.getCreateTime());
+                            intent.putExtra("title",note.getTitle());
+                            intent.putExtra("note",note.getContent());
+                            intent.putExtra("id",note.getId());
+                            intent.putExtra("type","item");
+                            startActivityForResult(intent,6);
+                        }
+                    });
+                    dateAdapter.setOnItemLongClickListener(new NoteAdapter.OnRecyclerViewItemLongClickListener() {
+                        @Override
+                        public void onItemLongClick(View view, final NoteItem note) {
+                            //定义AlertDialog.Builder对象，当长按列表项的时候弹出确认删除对话框
+                            android.app.AlertDialog.Builder builder=new AlertDialog.Builder(NoteActivity.this);
+                            builder.setMessage("确定删除?");
+                            builder.setTitle("提示");
+
+                            //添加AlertDialog.Builder对象的setPositiveButton()方法
+                            builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dateAdapter.delete(note);
+                                    if(!bills.contains(note)){
+                                        System.out.println("success");
+                                        //删除列表操作数据库
+                                    }else {
+                                        System.out.println("failed");
+                                    }
+                                    Toast.makeText(getBaseContext(), "删除列表项", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                            //添加AlertDialog.Builder对象的setNegativeButton()方法
+                            builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+
+                                }
+                            });
+
+                            builder.create().show();
+                        }
+                    });
+                    recyclerView.addItemDecoration(new SpacesItemDecoration(3));
+                    StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);  //两列，纵向排列
+                    recyclerView.setLayoutManager(staggeredGridLayoutManager);
+                    recyclerView.setAdapter(dateAdapter);
+                    break;
+            }
+        }
+    };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,7 +179,7 @@ public class NoteActivity extends AppCompatActivity
         setListener();
         setScrollerHeight();
         initFlash();
-        test();
+        initData();
     }
     /**
      * 设置scrollerview高度
@@ -124,119 +215,38 @@ public class NoteActivity extends AppCompatActivity
     /**
      * 放数据
      */
-    private void test() {
-        //设置星期
-        Date date = new Date();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        final String str = format.format(date);
-        NoteItem bill1 = new NoteItem(1,"11111",str,"11","sss");
-        NoteItem bill2 = new NoteItem(2,"欢迎欢迎",str,"","");
-        NoteItem bill3 = new NoteItem(3,"不觉得哪里是否",str,"","sss");
-        NoteItem bill4 = new NoteItem(4,"11111",str,"2222","sss");
-        NoteItem bill5 = new NoteItem(5,"欢迎欢迎",str,"","sss");
-        NoteItem bill6 = new NoteItem(6,"不觉得哪里是否不觉得哪里是否不觉得哪里是否v不觉得哪里是否",str,"","sss");
-        NoteItem bill7 = new NoteItem(7,"11111",str,"","sss");
-        NoteItem bill8 = new NoteItem(8,"欢迎欢迎",str,"","sss");
-        bills.add(bill1);
-        bills.add(bill2);
-        bills.add(bill3);
-        bills.add(bill4);
-        bills.add(bill5);
-        bills.add(bill6);
-        bills.add(bill7);
-        bills.add(bill8);
-        dateAdapter=new NoteAdapter(bills,NoteActivity.this);
-        dateAdapter.setOnItemClickListener(new NoteAdapter.OnRecyclerViewItemClickListener() {
+    private void initData() {
+        OkHttpClient okHttpClient=new OkHttpClient();
+        FormBody formBody =
+                new FormBody.Builder()
+                        .add("userId", ServerConfig.USER_ID+"")
+                        .build();
+        //创建请求对象
+        Request request = new Request.Builder()
+                .url(ServerConfig.SERVER_HOME + "GetNoteListServlet")
+                .method("POST", formBody)
+                .post(formBody)
+                .build();
+        //3. 创建CALL对象
+        Call call = okHttpClient.newCall(request);
+        //3. 异步方式提交请求并获取响应
+        call.enqueue(new Callback() {
             @Override
-            public void onItemClick(View view, NoteItem note) {
-                Intent intent = new Intent(NoteActivity.this,NoteItemActivity.class);
-                intent.putExtra("date",note.getCreateTime());
-                intent.putExtra("title",note.getTitle());
-                intent.putExtra("note",note.getContent());
-                intent.putExtra("id",note.getId());
-                intent.putExtra("type","item");
-                startActivityForResult(intent,6);
+            public void onFailure(Call call, IOException e) {
+                Log.i("lww", "请求失败");
+            }
+
+            @Override
+            public void onResponse( Call call,  Response response) throws IOException {
+                //获取服务端返回的数据
+                String result = response.body().string();
+                //使用handler将数据封装在Message中，并发布出去，以备显示在UI控件中
+                Message msg = handler.obtainMessage();
+                msg.what = 1;
+                msg.obj = result;
+                handler.sendMessage(msg);
             }
         });
-        dateAdapter.setOnItemLongClickListener(new NoteAdapter.OnRecyclerViewItemLongClickListener() {
-            @Override
-            public void onItemLongClick(View view, final NoteItem note) {
-                //定义AlertDialog.Builder对象，当长按列表项的时候弹出确认删除对话框
-                android.app.AlertDialog.Builder builder=new AlertDialog.Builder(NoteActivity.this);
-                builder.setMessage("确定删除?");
-                builder.setTitle("提示");
-
-                //添加AlertDialog.Builder对象的setPositiveButton()方法
-                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dateAdapter.delete(note);
-                        if(!bills.contains(note)){
-                            System.out.println("success");
-                            //删除列表操作数据库
-                        }else {
-                            System.out.println("failed");
-                        }
-                        Toast.makeText(getBaseContext(), "删除列表项", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-                //添加AlertDialog.Builder对象的setNegativeButton()方法
-                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-
-                    }
-                });
-
-                builder.create().show();
-            }
-        });
-        recyclerView.addItemDecoration(new SpacesItemDecoration(3));
-        StaggeredGridLayoutManager staggeredGridLayoutManager = new StaggeredGridLayoutManager(2,StaggeredGridLayoutManager.VERTICAL);  //两列，纵向排列
-        recyclerView.setLayoutManager(staggeredGridLayoutManager);
-        recyclerView.setAdapter(dateAdapter);
-
-        //listView长按事件
-//        dateAdapter.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-//
-//            @Override
-//            public boolean onItemLongClick(AdapterView<?> parent, View view,
-//                                           final int position, long id) {
-//                //定义AlertDialog.Builder对象，当长按列表项的时候弹出确认删除对话框
-//                android.app.AlertDialog.Builder builder=new AlertDialog.Builder(NoteActivity.this);
-//                builder.setMessage("确定删除?");
-//                builder.setTitle("提示");
-//
-//                //添加AlertDialog.Builder对象的setPositiveButton()方法
-//                builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        if(bills.remove(position)!=null){
-//                            System.out.println("success");
-//                            //删除列表操作数据库
-//                        }else {
-//                            System.out.println("failed");
-//                        }
-//                        dateAdapter.notifyDataSetChanged();
-//                        Toast.makeText(getBaseContext(), "删除列表项", Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//
-//                //添加AlertDialog.Builder对象的setNegativeButton()方法
-//                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
-//
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//
-//                    }
-//                });
-//
-//                builder.create().show();
-//                return true;
-//            }
-//        });
 
     }
 
@@ -375,7 +385,6 @@ public class NoteActivity extends AppCompatActivity
                 if(data!=null) {
                     Bundle bundle=data.getBundleExtra("note");
                     NoteItem noteItem= (NoteItem) bundle.getSerializable("note");
-                    noteItem.setId(bills.size());
                     dateAdapter.add(noteItem);
                 }
                 break;

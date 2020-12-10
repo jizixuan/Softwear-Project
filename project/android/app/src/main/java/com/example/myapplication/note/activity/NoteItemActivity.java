@@ -13,6 +13,8 @@ import android.content.pm.ActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Looper;
+import android.os.Message;
 import android.text.Editable;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -28,6 +30,7 @@ import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bigkoo.pickerview.builder.TimePickerBuilder;
 import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
@@ -37,11 +40,13 @@ import com.example.myapplication.R;
 import com.example.myapplication.note.entity.NoteItem;
 import com.example.myapplication.util.ContentToSpannableString;
 import com.example.myapplication.util.GlideImageEngine;
+import com.example.myapplication.util.ServerConfig;
 import com.example.myapplication.util.UriToPathUtil;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -49,6 +54,13 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class NoteItemActivity extends AppCompatActivity {
     private GlideImageEngine glideImageEngine;
@@ -125,28 +137,98 @@ public class NoteItemActivity extends AppCompatActivity {
                 }else{
                     subContent = "";
                 }
-                NoteItem noteItem=new NoteItem();
+                final NoteItem noteItem=new NoteItem();
                 noteItem.setContent(mContent);
                 noteItem.setTitle(title);
                 noteItem.setSubContent(subContent);
-                int id=getIntent().getIntExtra("id",0);
-                noteItem.setId(id);
+
                 Date date = new Date();
                 DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
                 String str = format.format(date);
                 noteItem.setCreateTime(str);
-                Intent intent = new Intent();
-                Bundle bundle = new Bundle();
-                bundle.putSerializable("note",noteItem);
-                intent.putExtra("note",bundle);
+                final Intent intent = new Intent();
                 if(type.equals("item")){
+                    Log.e("lww","更新");
                     //更新
-                    setResult(6,intent);
+                    final int id=getIntent().getIntExtra("id",0);
+                    OkHttpClient okHttpClient=new OkHttpClient();
+                    FormBody formBody =
+                            new FormBody.Builder()
+                                    .add("userId", ServerConfig.USER_ID+"")
+                                    .add("content",mContent)
+                                    .add("createTime",str)
+                                    .add("title",title)
+                                    .add("id",id+"")
+                                    .add("subContent",subContent)
+                                    .build();
+                    //创建请求对象
+                    Request request = new Request.Builder()
+                            .url(ServerConfig.SERVER_HOME + "UpdateNoteServlet")
+                            .method("POST", formBody)
+                            .post(formBody)
+                            .build();
+                    //3. 创建CALL对象
+                    Call call = okHttpClient.newCall(request);
+                    //3. 异步方式提交请求并获取响应
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            Log.i("lww", "请求失败");
+                        }
+
+                        @Override
+                        public void onResponse( Call call,  Response response) throws IOException {
+
+                        }
+                    });
+                    noteItem.setId(id);
+                    Bundle bundle = new Bundle();
+                    bundle.putSerializable("note", noteItem);
+                    intent.putExtra("note", bundle);
+                    setResult(6, intent);
                     finish();
+
+
                 }else if (type.equals("create")){
+                    Log.e("lww","创建");
                     //创建
-                    setResult(5,intent);
-                    finish();
+                    OkHttpClient okHttpClient=new OkHttpClient();
+                    FormBody formBody =
+                            new FormBody.Builder()
+                                    .add("userId", ServerConfig.USER_ID+"")
+                                    .add("content",mContent)
+                                    .add("createTime",str)
+                                    .add("title",title)
+                                    .add("subContent",subContent)
+                                    .build();
+                    //创建请求对象
+                    Request request = new Request.Builder()
+                            .url(ServerConfig.SERVER_HOME + "InsertNoteServlet")
+                            .method("POST", formBody)
+                            .post(formBody)
+                            .build();
+                    //3. 创建CALL对象
+                    Call call = okHttpClient.newCall(request);
+                    //3. 异步方式提交请求并获取响应
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            Log.i("lww", "请求失败");
+                        }
+
+                        @Override
+                        public void onResponse( Call call,  Response response) throws IOException {
+                            //获取服务端返回的数据
+                            String result = response.body().string();
+                            noteItem.setId(Integer.parseInt(result));
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("note",noteItem);
+                            intent.putExtra("note",bundle);
+                            setResult(5,intent);
+                            finish();
+                        }
+                    });
+
                 }
 
             }
@@ -165,14 +247,40 @@ public class NoteItemActivity extends AppCompatActivity {
             }
         });
         delete.setOnClickListener(new View.OnClickListener() {
+            //删除
+            final int id=getIntent().getIntExtra("id",0);
             @Override
             public void onClick(View view) {
                 if(type.equals("item")){
-                    int id=getIntent().getIntExtra("id",0);
-                    Intent intent=new Intent();
-                    intent.putExtra("id",id);
-                    intent.putExtra("operation","delete");
-                    setResult(6,intent);
+                    OkHttpClient okHttpClient=new OkHttpClient();
+                    FormBody formBody =
+                            new FormBody.Builder()
+                                    .add("id",id+"")
+                                    .build();
+                    //创建请求对象
+                    Request request = new Request.Builder()
+                            .url(ServerConfig.SERVER_HOME + "DeleteNoteServlet")
+                            .method("POST", formBody)
+                            .post(formBody)
+                            .build();
+                    //3. 创建CALL对象
+                    Call call = okHttpClient.newCall(request);
+                    //3. 异步方式提交请求并获取响应
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            Log.i("lww", "请求失败");
+                        }
+
+                        @Override
+                        public void onResponse( Call call,  Response response) throws IOException {
+                        }
+                    });
+                    int id = getIntent().getIntExtra("id", 0);
+                    Intent intent = new Intent();
+                    intent.putExtra("id", id);
+                    intent.putExtra("operation", "delete");
+                    setResult(6, intent);
                     finish();
                 }
             }

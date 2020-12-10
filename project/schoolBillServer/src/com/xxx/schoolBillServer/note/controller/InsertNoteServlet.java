@@ -1,8 +1,7 @@
-package com.xxx.schoolBillServer.bill_type.controller;
+package com.xxx.schoolBillServer.note.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.List;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -10,23 +9,19 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import com.xxx.schoolBillServer.bill_type.service.BillTypeServiceImpl;
-import com.xxx.schoolBillServer.entity.BillType;
+import com.xxx.schoolBillServer.note.service.NoteServiceImpl;
 
 /**
- * Servlet implementation class GetBillTypeListService
+ * Servlet implementation class InsertNoteServlet
  */
-@WebServlet("/GetBillTypeListService")
-public class GetBillTypeListService extends HttpServlet {
+@WebServlet("/InsertNoteServlet")
+public class InsertNoteServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetBillTypeListService() {
+    public InsertNoteServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -43,19 +38,14 @@ public class GetBillTypeListService extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
+		String content=request.getParameter("content");
+		String createTime=request.getParameter("createTime");
+		String title=request.getParameter("title");
+		String subContent=request.getParameter("subContent");
+		int userId=Integer.parseInt(request.getParameter("userId"));
+		int id=new NoteServiceImpl().insertNote(content, createTime, title, subContent, userId);
 		PrintWriter w = response.getWriter();
-		List<BillType> billTypes=new BillTypeServiceImpl().getTypeList();
-		JSONArray jsonArray=new JSONArray();
-		for(BillType billType:billTypes) {
-			JSONObject jsonObject=new JSONObject();
-			jsonObject.put("name", billType.getName());
-			jsonObject.put("id", billType.getId());
-			jsonObject.put("img", billType.getImg());
-			jsonObject.put("numType", billType.getNumType());
-			jsonArray.put(jsonObject);
-		}
-		System.out.print(jsonArray.toString());
-		w.write(jsonArray.toString());
+		w.write(id+"");
 		doGet(request, response);
 	}
 

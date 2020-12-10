@@ -182,7 +182,7 @@ public class InOrOutDetailActivity extends AppCompatActivity {
                         .build();
         //创建请求对象
         Request request = new Request.Builder()
-                .url(ServerConfig.SERVER_HOME1 + "GetBillItemListOrderByNum")
+                .url(ServerConfig.SERVER_HOME + "GetBillItemListOrderByNum")
                 .method("POST", formBody)
                 .post(formBody)
                 .build();

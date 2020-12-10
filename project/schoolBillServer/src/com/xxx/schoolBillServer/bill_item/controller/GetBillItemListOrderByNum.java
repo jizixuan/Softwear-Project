@@ -14,21 +14,19 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import com.xxx.schoolBillServer.bill_item.service.BillItemServiceImpl;
-import com.xxx.schoolBillServer.bill_type.service.BillTypeServiceImpl;
 import com.xxx.schoolBillServer.entity.BillItem;
-import com.xxx.schoolBillServer.entity.BillType;
 
 /**
- * Servlet implementation class GetBillItemListByDateServlet
+ * Servlet implementation class GetBillItemListOrderByNum
  */
-@WebServlet("/GetBillItemListByDateServlet")
-public class GetBillItemListByDateServlet extends HttpServlet {
+@WebServlet("/GetBillItemListOrderByNum")
+public class GetBillItemListOrderByNum extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetBillItemListByDateServlet() {
+    public GetBillItemListOrderByNum() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -48,7 +46,7 @@ public class GetBillItemListByDateServlet extends HttpServlet {
 		int year=Integer.parseInt(request.getParameter("year"));
 		int month=Integer.parseInt(request.getParameter("month"));
 		int userId=Integer.parseInt(request.getParameter("userId"));
-		List<BillItem> billItems=new BillItemServiceImpl().getBillItemListByDate(year, month, userId);
+		List<BillItem> billItems=new BillItemServiceImpl().getBillItemListOrderByNum(year, month, userId);
 		JSONArray jsonArray=new JSONArray();
 		for(BillItem billItem:billItems) {
 			JSONObject jsonObject=new JSONObject();
