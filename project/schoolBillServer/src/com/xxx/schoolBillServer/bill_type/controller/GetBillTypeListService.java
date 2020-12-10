@@ -1,4 +1,4 @@
-package com.xxx.schoolBillServer.bill_item.controller;
+package com.xxx.schoolBillServer.bill_type.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,20 +13,20 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.xxx.schoolBillServer.bill_item.service.BillItemServiceImpl;
-import com.xxx.schoolBillServer.entity.BillItem;
+import com.xxx.schoolBillServer.bill_type.service.BillTypeServiceImpl;
+import com.xxx.schoolBillServer.entity.BillType;
 
 /**
- * Servlet implementation class GetBillItemListOrderByNum
+ * Servlet implementation class GetBillTypeListService
  */
-@WebServlet("/GetBillItemListOrderByNum")
-public class GetBillItemListOrderByNum extends HttpServlet {
+@WebServlet("/GetBillTypeListService")
+public class GetBillTypeListService extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetBillItemListOrderByNum() {
+    public GetBillTypeListService() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -43,24 +43,18 @@ public class GetBillItemListOrderByNum extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
-		int year=Integer.parseInt(request.getParameter("year"));
-		int month=Integer.parseInt(request.getParameter("month"));
-		int userId=Integer.parseInt(request.getParameter("userId"));
-		List<BillItem> billItems=new BillItemServiceImpl().getBillItemListOrderByNum(year, month, userId);
+		PrintWriter w = response.getWriter();
+		List<BillType> billTypes=new BillTypeServiceImpl().getTypeList();
 		JSONArray jsonArray=new JSONArray();
-		for(BillItem billItem:billItems) {
+		for(BillType billType:billTypes) {
 			JSONObject jsonObject=new JSONObject();
-			jsonObject.put("id", billItem.getId());
-			jsonObject.put("day", billItem.getDay());
-			jsonObject.put("month", billItem.getMonth());
-			jsonObject.put("year", billItem.getYear());
-			jsonObject.put("num", billItem.getNum());
-			jsonObject.put("note", billItem.getNote());
-			jsonObject.put("date", billItem.getDate());
-			jsonObject.put("typeId", billItem.getTypeId());
+			jsonObject.put("name", billType.getName());
+			jsonObject.put("id", billType.getId());
+			jsonObject.put("img", billType.getImg());
+			jsonObject.put("numType", billType.getNumType());
 			jsonArray.put(jsonObject);
 		}
-		PrintWriter w = response.getWriter();
+		System.out.print(jsonArray.toString());
 		w.write(jsonArray.toString());
 		doGet(request, response);
 	}

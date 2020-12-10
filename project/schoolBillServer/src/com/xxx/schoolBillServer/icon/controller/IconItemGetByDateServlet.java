@@ -1,7 +1,10 @@
-package com.xxx.schoolBillServer.bill_item.controller;
+package com.xxx.schoolBillServer.icon.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -16,19 +19,19 @@ import org.json.JSONObject;
 import com.xxx.schoolBillServer.bill_item.service.BillItemServiceImpl;
 import com.xxx.schoolBillServer.bill_type.service.BillTypeServiceImpl;
 import com.xxx.schoolBillServer.entity.BillItem;
-import com.xxx.schoolBillServer.entity.BillType;
+import com.xxx.schoolBillServer.icon.service.IconItemServiceImpl;
 
 /**
- * Servlet implementation class GetBillItemListByDateServlet
+ * Servlet implementation class IconItemGetByDateServlet
  */
-@WebServlet("/GetBillItemListByDateServlet")
-public class GetBillItemListByDateServlet extends HttpServlet {
+@WebServlet("/IconItemGetByDateServlet")
+public class IconItemGetByDateServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetBillItemListByDateServlet() {
+    public IconItemGetByDateServlet() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -45,10 +48,22 @@ public class GetBillItemListByDateServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
-		int year=Integer.parseInt(request.getParameter("year"));
-		int month=Integer.parseInt(request.getParameter("month"));
+		String firstW=request.getParameter("first");
+		String lastW=request.getParameter("last");
 		int userId=Integer.parseInt(request.getParameter("userId"));
-		List<BillItem> billItems=new BillItemServiceImpl().getBillItemListByDate(year, month, userId);
+		System.out.println(firstW+" "+lastW+" "+userId);
+		List<BillItem> billItems=new IconItemServiceImpl().getIconItemByDate(userId,firstW,lastW);
+		for (int i = 0; i < billItems.size(); i++) {
+	    	for (int j = 0; j < billItems.size(); ) {
+	    		if (i != j && billItems.get(j).getTypeId()==billItems.get(i).getTypeId()) {
+	    			billItems.get(i).setNum(billItems.get(i).getNum() + billItems.get(j).getNum());
+	    			billItems.get(i).setDate(billItems.get(j).getDate());
+	    			billItems.remove(j);
+	    		} else {
+	    			j++;
+	    		}
+	    	}
+	    }
 		JSONArray jsonArray=new JSONArray();
 		for(BillItem billItem:billItems) {
 			JSONObject jsonObject=new JSONObject();

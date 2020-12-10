@@ -1,7 +1,6 @@
 package com.xxx.schoolBillServer.bill_item.controller;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -51,9 +50,7 @@ public class InsertBillItemServlet extends HttpServlet {
 		int day=Integer.parseInt(dateValue.split("/")[2]);
 		Date date=stringToDate(year+"-"+month+"-"+day,"yyyy-MM-dd");
 		int typeId=new BillTypeServiceImpl().getTypeIdByName(typeName);
-		int id=new BillItemServiceImpl().insertBillItem(num, note, date, year, month, day, typeId, userId);
-		PrintWriter w = response.getWriter();
-		w.write(id+"");
+		new BillItemServiceImpl().insertBillItem(num, note, date, year, month, day, typeId, userId);
 		doGet(request, response);
 	}
 	public static Date stringToDate(String dateStr, String dateFormat) {

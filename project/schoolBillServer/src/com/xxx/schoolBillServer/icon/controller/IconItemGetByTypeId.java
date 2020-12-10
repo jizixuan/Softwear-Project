@@ -1,4 +1,4 @@
-package com.xxx.schoolBillServer.bill_item.controller;
+package com.xxx.schoolBillServer.icon.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,22 +13,22 @@ import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.xxx.schoolBillServer.bill_item.service.BillItemServiceImpl;
 import com.xxx.schoolBillServer.bill_type.service.BillTypeServiceImpl;
 import com.xxx.schoolBillServer.entity.BillItem;
 import com.xxx.schoolBillServer.entity.BillType;
+import com.xxx.schoolBillServer.icon.service.IconItemServiceImpl;
 
 /**
- * Servlet implementation class GetBillItemListByDateServlet
+ * Servlet implementation class IconItemGetByTypeId
  */
-@WebServlet("/GetBillItemListByDateServlet")
-public class GetBillItemListByDateServlet extends HttpServlet {
+@WebServlet("/IconItemGetByTypeId")
+public class IconItemGetByTypeId extends HttpServlet {
 	private static final long serialVersionUID = 1L;
        
     /**
      * @see HttpServlet#HttpServlet()
      */
-    public GetBillItemListByDateServlet() {
+    public IconItemGetByTypeId() {
         super();
         // TODO Auto-generated constructor stub
     }
@@ -37,6 +37,8 @@ public class GetBillItemListByDateServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -45,10 +47,10 @@ public class GetBillItemListByDateServlet extends HttpServlet {
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		request.setCharacterEncoding("utf-8");
 		response.setContentType("text/html;charset=utf-8");
-		int year=Integer.parseInt(request.getParameter("year"));
-		int month=Integer.parseInt(request.getParameter("month"));
-		int userId=Integer.parseInt(request.getParameter("userId"));
-		List<BillItem> billItems=new BillItemServiceImpl().getBillItemListByDate(year, month, userId);
+		String type=request.getParameter("type");
+		int typeId=new BillTypeServiceImpl().getTypeIdByName(type);
+		System.out.println(typeId);
+		List<BillItem> billItems=new IconItemServiceImpl().getIconItemListByTypeId(typeId);
 		JSONArray jsonArray=new JSONArray();
 		for(BillItem billItem:billItems) {
 			JSONObject jsonObject=new JSONObject();
