@@ -128,6 +128,8 @@ public class NoteActivity extends AppCompatActivity
                             intent.putExtra("id",note.getId());
                             intent.putExtra("type","item");
                             startActivityForResult(intent,6);
+                            overridePendingTransition(R.anim.slide_in_right,
+                                    R.anim.slide_out_left);
                         }
                     });
                     dateAdapter.setOnItemLongClickListener(new NoteAdapter.OnRecyclerViewItemLongClickListener() {
@@ -276,7 +278,9 @@ public class NoteActivity extends AppCompatActivity
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.income_detail_re_note:
-                    onBackPressed();
+                    finish();
+                    overridePendingTransition(R.anim.slide_in_left,
+                            R.anim.slide_out_right);
                     break;
                 case R.id.ti://提醒
                     //设置选择日期
@@ -288,10 +292,14 @@ public class NoteActivity extends AppCompatActivity
                     intent.putExtra("type","remind");
                     intent.setClass(NoteActivity.this,NoteItemActivity.class);
                     startActivity(intent);
+                    overridePendingTransition(R.anim.slide_in_right,
+                            R.anim.slide_out_left);
                     break;
                 case R.id.ti1://扫描
                     Intent intent2 = new Intent(NoteActivity.this,SimpleTextActivity.class);
                     startActivity(intent2);
+                    overridePendingTransition(R.anim.slide_in_right,
+                            R.anim.slide_out_left);
                     break;
                 case R.id.ti2://听写
                     break;
@@ -304,6 +312,8 @@ public class NoteActivity extends AppCompatActivity
                     intent1.putExtra("type","create");
                     intent1.setClass(NoteActivity.this,NoteItemActivity.class);
                     startActivityForResult(intent1,5);
+                    overridePendingTransition(R.anim.slide_in_right,
+                            R.anim.slide_out_left);
                     break;
             }
         }

@@ -11,14 +11,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ListView;
-import android.widget.TextView;
 
-import com.example.myapplication.BillDetailsActivity;
 import com.example.myapplication.IconItemActivity;
-import com.example.myapplication.IncomeDetailsActivity;
 import com.example.myapplication.R;
-import com.example.myapplication.entity.BillItem;
-import com.example.myapplication.entity.DateBill;
 import com.example.myapplication.entity.IconItem;
 import com.example.myapplication.entity.IconList;
 import com.example.myapplication.util.ConfigUtil;
@@ -37,14 +32,13 @@ public class IconAdapter extends BaseAdapter {
     private List<IconList> dateBills=new ArrayList<>();
     private Context mContext;
     private int layout;
-    private IconItemAdapter daAdapter;
+    private ViewHolder holder;
     public IconAdapter(){
     }
     public IconAdapter(List<IconList> dateBills, Context mContext, int layout) {
         this.dateBills = dateBills;
         this.mContext = mContext;
         this.layout = layout;
-        daAdapter=new IconItemAdapter(mContext);
     }
     @Override
     public int getCount() {
@@ -61,7 +55,6 @@ public class IconAdapter extends BaseAdapter {
         }
         return null;
     }
-
     @Override
     public long getItemId(int i) {
         return i;
@@ -81,42 +74,44 @@ public class IconAdapter extends BaseAdapter {
         }else{
             holder= (IconAdapter.ViewHolder) view.getTag();
         }
-        //设置星期
-        Date date = dateBills.get(position).getDate();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        final String str = format.format(date);
-        //设置日期
-        Date date1 = dateBills.get(position).getDate();
-        DateFormat format1 = new SimpleDateFormat("MM月dd日");
-        final String str1 = format1.format(date1);
-        //设置子listview
-        daAdapter.addAll(dateBills.get(position).getBills());
-        holder.listView.setAdapter(daAdapter);
-        ConfigUtil.setListViewHeightBasedOnChildren(holder.listView);
-        holder.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Intent intent=new Intent();
-                IconItem item=dateBills.get(position).getBills().get(i);
-                intent.putExtra("type",item.getType());
-                intent.putExtra("num",item.getNum());
-                intent.putExtra("numType",item.getNumType());
-                intent.putExtra("note",item.getNote());
-                intent.putExtra("date",str+"   "+Week(str1));
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                item.getImg().compress(Bitmap.CompressFormat.PNG, 100, out);
-                byte[] array= out.toByteArray();
-                intent.putExtra("bitmap",array);
-                intent.setClass(mContext, IconItemActivity.class);
-                intent.putExtra("transition", "explode");
-                mContext.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) mContext).toBundle());
+            //设置星期
+            Date date = dateBills.get(position).getDate();
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+            final String str = format.format(date);
+            //设置日期
+            Date date1 = dateBills.get(position).getDate();
+            DateFormat format1 = new SimpleDateFormat("MM月dd日");
+            final String str1 = format1.format(date1);
+            //设置子listview
+            holder.daAdapter = new IconItemAdapter(mContext);
+            holder.daAdapter.addAll(dateBills.get(position).getBills());
+            holder.listView.setAdapter(holder.daAdapter);
+            ConfigUtil.setListViewHeightBasedOnChildren(holder.listView);
+            holder.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                    Intent intent=new Intent();
+                    IconItem item=dateBills.get(position).getBills().get(i);
+                    intent.putExtra("type",item.getType());
+                    intent.putExtra("num",item.getNum());
+                    intent.putExtra("numType",item.getNumType());
+                    intent.putExtra("note",item.getNote());
+                    intent.putExtra("date",str+"   "+Week(str1));
+                    ByteArrayOutputStream out = new ByteArrayOutputStream();
+                    item.getImg().compress(Bitmap.CompressFormat.PNG, 100, out);
+                    byte[] array= out.toByteArray();
+                    intent.putExtra("bitmap",array);
+                    intent.setClass(mContext, IconItemActivity.class);
+                    intent.putExtra("transition", "explode");
+                    mContext.startActivity(intent, ActivityOptions.makeSceneTransitionAnimation((Activity) mContext).toBundle());
 //                mContext.startActivity(intent);
-            }
-        });
+                }
+            });
         return view;
     }
     private class ViewHolder{
         ListView listView;
+        IconItemAdapter daAdapter;
     }
 
     /**

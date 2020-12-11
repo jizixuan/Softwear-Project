@@ -395,7 +395,9 @@ public class MainActivity extends Fragment {
                 case R.id.note:
                     Intent intent2 = new Intent();
                     intent2.setClass(root.getContext(), NoteActivity.class);
-                    startActivity(intent2, ActivityOptions.makeSceneTransitionAnimation((Activity) root.getContext()).toBundle());
+                    startActivity(intent2);
+                    getActivity().overridePendingTransition(R.anim.slide_in_right,
+                            R.anim.slide_out_left);
                     break;
                 case R.id.bill:
                     Intent intent4 = new Intent(root.getContext(),BillActivity.class);

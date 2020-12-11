@@ -58,6 +58,8 @@ public class SimpleTextActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 finish();
+                overridePendingTransition(R.anim.slide_in_left,
+                        R.anim.slide_out_right);
             }
         });
         CameraNativeHelper.init(this, OCR.getInstance(this).getLicense(),

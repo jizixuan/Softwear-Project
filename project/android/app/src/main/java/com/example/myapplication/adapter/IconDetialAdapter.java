@@ -20,7 +20,6 @@ import com.example.myapplication.entity.IconList;
 import com.example.myapplication.util.ConfigUtil;
 
 import java.io.ByteArrayOutputStream;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -33,14 +32,13 @@ public class IconDetialAdapter extends BaseAdapter {
     private List<IconList> dateBills=new ArrayList<>();
     private Context mContext;
     private int layout;
-    private IconItemAdapter daAdapter;
+    public ViewHolder holder;
     public IconDetialAdapter(){
     }
     public IconDetialAdapter(List<IconList> dateBills, Context mContext, int layout) {
         this.dateBills = dateBills;
         this.mContext = mContext;
         this.layout = layout;
-        daAdapter=new IconItemAdapter(mContext);
     }
     @Override
     public int getCount() {
@@ -66,7 +64,7 @@ public class IconDetialAdapter extends BaseAdapter {
     @Override
     public View getView(final int position, View view, ViewGroup viewGroup) {
         //获取组件
-        IconDetialAdapter.ViewHolder holder=null;
+        holder=null;
         if(null==holder){
             //加载item的布局文件
             LayoutInflater inflater=LayoutInflater.from(mContext);
@@ -77,17 +75,18 @@ public class IconDetialAdapter extends BaseAdapter {
         }else{
             holder= (IconDetialAdapter.ViewHolder) view.getTag();
         }
-        //设置星期
-        Date date = dateBills.get(position).getDate();
-        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        final String str = format.format(date);
-        //设置日期
-        Date date1 = dateBills.get(position).getDate();
-        DateFormat format1 = new SimpleDateFormat("MM月dd日");
-        final String str1 = format1.format(date1);
+//        //设置星期
+//        Date date = dateBills.get(position).getDate();
+//        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+//        final String str = format.format(date);
+//        //设置日期
+//        Date date1 = dateBills.get(position).getDate();
+//        DateFormat format1 = new SimpleDateFormat("MM月dd日");
+//        final String str1 = format1.format(date1);
         //设置子listview
-        daAdapter.addAll(dateBills.get(position).getBills());
-        holder.listView.setAdapter(daAdapter);
+        holder.daAdapter=new IconItemAdapter(mContext);
+        holder.daAdapter.addAll(dateBills.get(position).getBills());
+        holder.listView.setAdapter(holder.daAdapter);
         ConfigUtil.setListViewHeightBasedOnChildren(holder.listView);
         holder.listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -95,11 +94,11 @@ public class IconDetialAdapter extends BaseAdapter {
                 Intent intent=new Intent();
                 IconItem item=dateBills.get(position).getBills().get(i);
                 intent.putExtra("type",item.getType());
-                Log.e("IconDetialAdapter",item.getNumType());
+                Log.e("IconDetialAdapter",item.getDate()+"   "+Week(item.getDate()));
                 intent.putExtra("num",item.getNum());
                 intent.putExtra("numType",item.getNumType());
                 intent.putExtra("note",item.getNote());
-                intent.putExtra("date",str+"   "+Week(str1));
+                intent.putExtra("date",item.getDate()+"   "+Week(item.getDate()));
                 ByteArrayOutputStream out = new ByteArrayOutputStream();
                 item.getImg().compress(Bitmap.CompressFormat.PNG, 100, out);
                 byte[] array= out.toByteArray();
@@ -112,8 +111,9 @@ public class IconDetialAdapter extends BaseAdapter {
         });
         return view;
     }
-    private class ViewHolder{
+    public class ViewHolder{
         ListView listView;
+        IconItemAdapter daAdapter;
     }
 
     /**

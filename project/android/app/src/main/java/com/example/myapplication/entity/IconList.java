@@ -7,6 +7,9 @@ public class IconList {
     private Date date;
     private List<IconItem> bills;
 
+    public IconList() {
+    }
+
     public IconList(Date date, List<IconItem> bills) {
         this.date = date;
         this.bills = bills;

@@ -148,7 +148,6 @@ public class NoteItemActivity extends AppCompatActivity {
                 noteItem.setCreateTime(str);
                 final Intent intent = new Intent();
                 if(type.equals("item")){
-                    Log.e("lww","更新");
                     //更新
                     final int id=getIntent().getIntExtra("id",0);
                     OkHttpClient okHttpClient=new OkHttpClient();
@@ -187,10 +186,9 @@ public class NoteItemActivity extends AppCompatActivity {
                     intent.putExtra("note", bundle);
                     setResult(6, intent);
                     finish();
-
-
+                    overridePendingTransition(R.anim.slide_in_left,
+                            R.anim.slide_out_right);
                 }else if (type.equals("create")){
-                    Log.e("lww","创建");
                     //创建
                     OkHttpClient okHttpClient=new OkHttpClient();
                     FormBody formBody =
@@ -226,6 +224,8 @@ public class NoteItemActivity extends AppCompatActivity {
                             intent.putExtra("note",bundle);
                             setResult(5,intent);
                             finish();
+                            overridePendingTransition(R.anim.slide_in_left,
+                                    R.anim.slide_out_right);
                         }
                     });
 
@@ -238,6 +238,8 @@ public class NoteItemActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(NoteItemActivity.this,SimpleTextActivity.class);
                 startActivity(intent);
+                overridePendingTransition(R.anim.slide_in_left,
+                        R.anim.slide_out_right);
             }
         });
         actionButton.setOnClickListener(new View.OnClickListener() {
@@ -282,6 +284,8 @@ public class NoteItemActivity extends AppCompatActivity {
                     intent.putExtra("operation", "delete");
                     setResult(6, intent);
                     finish();
+                    overridePendingTransition(R.anim.slide_in_left,
+                            R.anim.slide_out_right);
                 }
             }
         });

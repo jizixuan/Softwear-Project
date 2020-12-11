@@ -10,8 +10,8 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.myapplication.view.MoneyFragmentAdapter;
 import com.example.myapplication.R;
+import com.example.myapplication.view.MoneyFragmentAdapter;
 import com.google.android.material.tabs.TabLayout;
 
 public class MoneyOutFragment extends Fragment {

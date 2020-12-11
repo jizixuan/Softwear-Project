@@ -4,26 +4,31 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.example.myapplication.view.MoneyFragmentAdapter;
 import com.example.myapplication.R;
+import com.example.myapplication.view.MoneyFragmentAdapter;
 import com.google.android.material.tabs.TabLayout;
+
+import java.util.List;
 
 public class MoneyInFragment extends Fragment {
     private View view;
     private TabLayout mTabLayout;
     private ViewPager mViewPager;
     private MoneyFragmentAdapter myFragmentPagerAdapter;
-
+    private List<Fragment> fragmentList;
     private TabLayout.Tab one;
     private TabLayout.Tab two;
     private TabLayout.Tab there;
+    private WeekFragment weekFragment = new WeekFragment();
+    private MouthFragment mouthFragment = new MouthFragment();
+    private YearFragment yearFragment = new YearFragment();
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -38,6 +43,7 @@ public class MoneyInFragment extends Fragment {
         mViewPager = view.findViewById(R.id.viewPager1);
         myFragmentPagerAdapter = new MoneyFragmentAdapter(getFragmentManager(),2);
         mViewPager.setAdapter(myFragmentPagerAdapter);
+        myFragmentPagerAdapter.notifyDataSetChanged();
         //将tablelayout与pageview绑定
         mTabLayout = view.findViewById(R.id.tabLayout1);
         mTabLayout.setupWithViewPager(mViewPager);

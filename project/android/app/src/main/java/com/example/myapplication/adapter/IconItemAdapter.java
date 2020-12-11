@@ -1,18 +1,15 @@
 package com.example.myapplication.adapter;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.example.myapplication.R;
-import com.example.myapplication.entity.BillItem;
 import com.example.myapplication.entity.IconItem;
 import com.liulishuo.magicprogresswidget.MagicProgressBar;
 
@@ -81,12 +78,12 @@ public class IconItemAdapter extends BaseAdapter {
         for(int j=0;j<bills.size();j++){
             count+=bills.get(j).getNum();
         }
-        double c = (bills.get(i).getNum()/count)*100;
+        double c = (bills.get(i).getNum()*100/count);
         java.text.DecimalFormat myformat=new java.text.DecimalFormat("0.00");
         java.text.DecimalFormat df = new java.text.DecimalFormat("0");
         String str = myformat.format(c);
         String str1 = df.format(c);
-        Log.e("lww",str1);
+//        Log.e("lww",str1);
         holder.percentage.setText(str+"%");
         if(i == 0){
             holder.pb.setSmoothPercent(1,800);
