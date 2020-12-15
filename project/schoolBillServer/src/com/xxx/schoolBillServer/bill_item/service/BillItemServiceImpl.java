@@ -5,6 +5,7 @@ import java.util.List;
 
 import com.xxx.schoolBillServer.bill_item.dao.BillItemDaoImpl;
 import com.xxx.schoolBillServer.entity.BillItem;
+import com.xxx.schoolBillServer.entity.BillMonth;
 
 public class BillItemServiceImpl {
 	public BillItemDaoImpl billItemDaoImpl=new BillItemDaoImpl();
@@ -22,5 +23,11 @@ public class BillItemServiceImpl {
 	}
 	public List<BillItem> getBillItemListOrderByNum(int year,int month,int userId){
 		return billItemDaoImpl.getBillItemListOrderByNum(year, month, userId);
+	}
+	public List<BillMonth> getBillMonthListByYear(int year,int id) {
+		return billItemDaoImpl.getBillMonthListByYear(year,id);
+	}
+	public int getBillNum(String month,String id) {
+		return billItemDaoImpl.getBillNum(month,id);
 	}
 }

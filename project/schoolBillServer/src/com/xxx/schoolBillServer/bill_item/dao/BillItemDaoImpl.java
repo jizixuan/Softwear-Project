@@ -11,6 +11,7 @@ import java.util.Date;
 import java.util.List;
 
 import com.xxx.schoolBillServer.entity.BillItem;
+import com.xxx.schoolBillServer.entity.BillMonth;
 import com.xxx.schoolBillServer.util.DbUtil;
 
 public class BillItemDaoImpl {
@@ -140,4 +141,55 @@ public class BillItemDaoImpl {
             return null;
         }
     }
+	/**
+	 * 获取每个的收入总额
+	 * @param year
+	 * @return
+	 */
+	public List<BillMonth> getBillMonthListByYear(int year,int id){
+		billMonths = new ArrayList<>();
+		Connection con = null;
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+		con = DbUtil.getCon();
+		String sql = "select month,sum(num),bill_type.num_type from bill_item,bill_type where bill_item.type_id = bill_type.id  and year = '"+year+"' and user_id = '"+id+"' group by month ,bill_type.num_type order by month desc";
+		System.out.println(sql);
+		try {
+			pstm = con.prepareStatement(sql);
+			rs = pstm.executeQuery();
+			while (rs.next()) {
+				BillMonth billMonth = new BillMonth();
+				billMonth.setYear(year);
+				billMonth.setMonth(rs.getInt(1));
+				billMonth.setBill(rs.getDouble(2));
+				billMonth.setType(rs.getString(3));
+				billMonths.add(billMonth);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return billMonths;
+	}
+	public int getBillNum(String month,String id) {
+		int a = 0;
+		Connection con = null;
+		PreparedStatement pstm = null;
+		ResultSet rs = null;
+		con = DbUtil.getCon();
+		String sql = "select count(*) from bill_item where month = '"+month+"' and user_id = '"+id+"'";
+		System.out.println(sql);
+		try {
+			pstm = con.prepareStatement(sql);
+			rs = pstm.executeQuery();
+			while(rs.next()) {
+				a = rs.getInt(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return a;
+	}
 }
