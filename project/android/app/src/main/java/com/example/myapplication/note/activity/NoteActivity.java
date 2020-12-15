@@ -146,6 +146,32 @@ public class NoteActivity extends AppCompatActivity
                                 public void onClick(DialogInterface dialog, int which) {
                                     dateAdapter.delete(note);
                                     if(!bills.contains(note)){
+                                        int id=note.getId();
+                                        //删除列表操作数据库
+                                        OkHttpClient okHttpClient=new OkHttpClient();
+                                        FormBody formBody =
+                                                new FormBody.Builder()
+                                                        .add("id",id+"")
+                                                        .build();
+                                        //创建请求对象
+                                        Request request = new Request.Builder()
+                                                .url(ServerConfig.SERVER_HOME + "DeleteNoteServlet")
+                                                .method("POST", formBody)
+                                                .post(formBody)
+                                                .build();
+                                        //3. 创建CALL对象
+                                        Call call = okHttpClient.newCall(request);
+                                        //3. 异步方式提交请求并获取响应
+                                        call.enqueue(new okhttp3.Callback() {
+                                            @Override
+                                            public void onFailure(Call call, IOException e) {
+                                                Log.i("lww", "请求失败");
+                                            }
+
+                                            @Override
+                                            public void onResponse( Call call,  Response response) throws IOException {
+                                            }
+                                        });
                                         System.out.println("success");
                                         //删除列表操作数据库
                                     }else {
@@ -297,7 +323,7 @@ public class NoteActivity extends AppCompatActivity
                     break;
                 case R.id.ti1://扫描
                     Intent intent2 = new Intent(NoteActivity.this,SimpleTextActivity.class);
-                    startActivity(intent2);
+                    startActivityForResult(intent2,7);
                     overridePendingTransition(R.anim.slide_in_right,
                             R.anim.slide_out_left);
                     break;
@@ -392,6 +418,7 @@ public class NoteActivity extends AppCompatActivity
         super.onActivityResult(requestCode, resultCode, data);
         switch(requestCode) {
             case 5:
+            case 7:
                 if(data!=null) {
                     Bundle bundle=data.getBundleExtra("note");
                     NoteItem noteItem= (NoteItem) bundle.getSerializable("note");

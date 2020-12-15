@@ -1,13 +1,10 @@
 package com.example.myapplication;
 
-import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -15,7 +12,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
-import android.provider.ContactsContract;
 import android.provider.MediaStore;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -28,13 +24,34 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.blankj.utilcode.util.ImageUtils;
-import com.example.myapplication.util.TakeBudgetPopWin;
+import com.example.myapplication.fragment.PersonalFragment;
+import com.example.myapplication.util.ServerConfig;
 import com.example.myapplication.util.TakePhotoPopWin;
 import com.example.myapplication.util.TakeSexPopWin;
+import com.google.gson.Gson;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ChangeInfoActvity extends AppCompatActivity {
 
@@ -44,6 +61,8 @@ public class ChangeInfoActvity extends AppCompatActivity {
     private ImageView imgAvatar;//头像
     private TextView tvName;//昵称
     private TextView tvSex;//性别
+    private TextView tvPhone;//电话
+    private TextView tvId;//用户id;
 
     private Button btnChangePwd;//修改密码
     private LinearLayout linearAvatar;//修改头像
@@ -56,6 +75,7 @@ public class ChangeInfoActvity extends AppCompatActivity {
     private Button btnCancel,btnConfirm;
     private EditText edtName;
     private String name;
+
 
 
     @Override
@@ -81,6 +101,12 @@ public class ChangeInfoActvity extends AppCompatActivity {
         setContentView(R.layout.activity_change_info_actvity);
         initViews();
         setListener();
+        String files = getApplicationContext().getFilesDir().getAbsolutePath();
+        String imgs = files+"/imgs";
+        String imgPath = imgs + "/" + ServerConfig.USER_INFO.getPhoto();
+        Bitmap header1 = BitmapFactory.decodeFile(imgPath);
+        header1 = ImageUtils.toRound(header1);
+        imgAvatar.setImageBitmap(header1);
     }
     /**
      * 检查是否有对应权限
@@ -89,7 +115,7 @@ public class ChangeInfoActvity extends AppCompatActivity {
      * @param permission 要检查的权限
      * @return  结果标识
      */
-    public int verifyPermissions(Activity activity, java.lang.String permission) {
+    public int verifyPermissions(Activity activity, String permission) {
         int Permission = ActivityCompat.checkSelfPermission(activity,permission);
         if (Permission == PackageManager.PERMISSION_GRANTED) {
             Log.e("lr","已经同意权限");
@@ -118,11 +144,18 @@ public class ChangeInfoActvity extends AppCompatActivity {
         imgAvatar = findViewById(R.id.img_avatar);
         tvName = findViewById(R.id.tv_name);
         tvSex = findViewById(R.id.tv_sex);
+        tvId = findViewById(R.id.tv_id);
         btnChangePwd = findViewById(R.id.btn_changePwd);
         linearAvatar = findViewById(R.id.avatar);
         linearName = findViewById(R.id.name);
         linearSex = findViewById(R.id.sex);
+        tvPhone = findViewById(R.id.tv_phone11);
         linearPhone = findViewById(R.id.changePhone);
+
+        tvName.setText(ServerConfig.USER_INFO.getName());
+        tvSex.setText(ServerConfig.USER_INFO.getSex());
+        tvPhone.setText(ServerConfig.USER_INFO.getPhone());
+        tvId.setText(ServerConfig.USER_INFO.getId()+"");
     }
 
     class MyListener implements View.OnClickListener{
@@ -132,12 +165,14 @@ public class ChangeInfoActvity extends AppCompatActivity {
             switch (view.getId()){
                 case R.id.img_back:
                     //返回我的界面
+                    Intent o = new Intent(ChangeInfoActvity.this, PersonalFragment.class);
+                    setResult(2);
                     finish();
                     break;
                 case R.id.btn_changePwd:
                     //跳转到修改密码界面
                     Intent i = new Intent();
-                    i.setClass(getApplicationContext(),ChangePwdActivity.class);
+                    i.setClass(getApplicationContext(), ChangePwdActivity.class);
                     startActivity(i);
                     break;
                 case R.id.avatar:
@@ -154,7 +189,7 @@ public class ChangeInfoActvity extends AppCompatActivity {
                     break;
                 case R.id.changePhone:
                     //修改电话号码
-                    Intent intent = new Intent(ChangeInfoActvity.this,ChangePhoneActivity.class);
+                    Intent intent = new Intent(ChangeInfoActvity.this, ChangePhoneActivity.class);
                     startActivity(intent);
                     break;
             }
@@ -213,6 +248,8 @@ public class ChangeInfoActvity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 tvName.setText(name);
+                ServerConfig.USER_INFO.setName(name);
+                updateInfo();
                 alertDialog.dismiss();
             }
         });
@@ -246,10 +283,14 @@ public class ChangeInfoActvity extends AppCompatActivity {
             switch (v.getId()) {
                 case R.id.btn_sex_man:
                     tvSex.setText("男");
+                    ServerConfig.USER_INFO.setSex("男");
+                    updateInfo();
                     takeSexPopWin.dismiss();
                     break;
                 case R.id.btn_sex_women:
                     tvSex.setText("女");
+                    ServerConfig.USER_INFO.setSex("女");
+                    updateInfo();
                     takeSexPopWin.dismiss();
                     break;
                 case R.id.btn_photo_take:
@@ -282,9 +323,13 @@ public class ChangeInfoActvity extends AppCompatActivity {
                 case 100:   //相册返回的数据（相册的返回码）
                     Log.e("lr", "相册");
                     Uri uri01 = data.getData();
+
+                    tempFile = new File(getRealPathFromURI(uri01));
                     try {
                         Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri01));
                         bitmap = ImageUtils.toRound(bitmap);
+                        upImg(tempFile);
+                        downImg(tempFile);
                         imgAvatar.setImageBitmap(bitmap);
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -299,12 +344,48 @@ public class ChangeInfoActvity extends AppCompatActivity {
                         Bitmap bitmap = BitmapFactory.decodeStream(getContentResolver().openInputStream(uri02));
                         bitmap = ImageUtils.toRound(bitmap);
                         imgAvatar.setImageBitmap(bitmap);
+                        upImg(tempFile);
+                        downImg(tempFile);
                     } catch (IOException e) {
                         e.printStackTrace();
                     }
+
                     break;
             }
         }
+    }
+    /**
+     * 更新用户信息
+     */
+    private void updateInfo(){
+        Gson gson = new Gson();
+        String json = gson.toJson(ServerConfig.USER_INFO);
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = FormBody.create(MediaType.parse("application/json; charset=utf-8"),json);
+        Log.i("lr","发送的信息"+json);
+        Request request = new Request.Builder()
+                .post(requestBody)
+                .url(ServerConfig.SERVER_HOME+"UpdateUserServlet")
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                try {
+                    String str = response.body().string();
+                    Log.i("lr","返回的信息"+ str +"龙瑞");
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**
@@ -326,5 +407,77 @@ public class ChangeInfoActvity extends AppCompatActivity {
         intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(new File(Environment.getExternalStorageDirectory(),"fileImg.jpg")));
         startActivityForResult(intent,101); // 101: 相机的返回码参数（随便一个值就行，只要不冲突就好）
         Log.e("lr","跳转相机成功");
+    }
+
+    /**
+     * 上传图片
+     * @param file
+     */
+    public void upImg(File file){
+        OkHttpClient client = new OkHttpClient();
+        MultipartBody.Builder builder = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("img", ServerConfig.USER_INFO.getPhone()+".jpg",
+                        RequestBody.create(MediaType.parse("image/png"), file));
+        RequestBody requestBody = builder.build();
+
+        Request request = new Request.Builder()
+                .url(ServerConfig.SERVER_HOME+"UpImgServlet")
+                .post(requestBody)
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String str = response.body().string();
+                Log.i("lr",str);
+            }
+        });
+    }
+    private String getRealPathFromURI(Uri contentURI) {
+        String result;
+        Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
+        if (cursor == null) {
+            // Source is Dropbox or other similar local file path
+            result = contentURI.getPath();
+        } else {
+            cursor.moveToFirst();
+            int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+            result = cursor.getString(idx);
+            cursor.close();
+        }
+        return result;
+    }
+    public void downImg(File file){
+        try {
+            InputStream inputStream = new FileInputStream(file);
+            String files = getApplicationContext().getFilesDir().getAbsolutePath();
+            String imgs = files+"/imgs";
+            //判断这个目录是否存在
+            File dirImgs = new File(imgs);
+            if (!dirImgs.exists()){
+                //如果目录不存在创建目录
+                dirImgs.mkdir();
+            }
+            String imgPath = imgs + "/" + ServerConfig.USER_INFO.getPhone()+".jpg";
+            Log.i("lr",imgPath+"龙龟是发送的阿三啊啊");
+            OutputStream out = new FileOutputStream(imgPath);
+            int b = -1;
+            while ((b=inputStream.read())!=-1){
+                out.write(b);
+                out.flush();
+            }
+            inputStream.close();
+            out.close();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

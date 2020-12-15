@@ -6,25 +6,37 @@ import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.FrameLayout;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.myapplication.entity.User;
+import com.example.myapplication.util.ServerConfig;
+import com.google.gson.Gson;
 import com.mob.MobSDK;
+
+import java.io.IOException;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class RegistActivity extends AppCompatActivity {
     String APPKEY = "317d3a41cc848";
     String APPSECRETE = "98f114c147e2560ca62e58e6619b6993";
     int i = 60;
+    private String phone;
+    private String pwd;
 
 
     private Button btnConfirm;
@@ -80,7 +92,7 @@ public class RegistActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            String phone = edtUser.getText().toString();
+            phone = edtUser.getText().toString();
             switch (view.getId()) {
                 case R.id.btn_confirm:
 
@@ -173,7 +185,7 @@ public class RegistActivity extends AppCompatActivity {
      * 获取用户输入密码并判断是否前后相同
      */
     private boolean getValues() {
-        String pwd = edtPwd.getText().toString();
+        pwd = edtPwd.getText().toString();
         String pwd2 = edtPwd2.getText().toString();
         if (!pwd.equals(pwd2)){
             edtPwd.setText("");
@@ -192,6 +204,19 @@ public class RegistActivity extends AppCompatActivity {
                 btnConfirm.setText("获取验证码");
                 btnConfirm.setClickable(true);
                 i = 60;
+            } else if(msg.what == 1 ){
+                String a = (String) msg.obj;
+                if(a.equals("1")){
+                    //跳转到登录界面
+                    Intent intent = new Intent(RegistActivity.this, LoginActivity.class);
+                    startActivity(intent);
+                }else if (a.equals("2")){
+                    //提示网络异常，稍后注册
+                    Toast.makeText(RegistActivity.this,"网络异常，稍后注册",Toast.LENGTH_LONG).show();
+                }else {
+                    //该号码已经注册，请登录
+                    Toast.makeText(RegistActivity.this,"该号码已经注册，请登录",Toast.LENGTH_LONG).show();
+                }
             } else {
                 int event = msg.arg1;
                 int result = msg.arg2;
@@ -203,8 +228,7 @@ public class RegistActivity extends AppCompatActivity {
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {// 提交验证码成功
                         Toast.makeText(getApplicationContext(), "提交验证码成功",
                                 Toast.LENGTH_SHORT).show();
-                        Intent intent = new Intent(getApplicationContext(),FragmentTabHost.class);
-                        startActivity(intent);
+                        sendUserInfo();
                     } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                         Toast.makeText(getApplicationContext(), "正在获取验证码",
                                 Toast.LENGTH_SHORT).show();
@@ -218,11 +242,57 @@ public class RegistActivity extends AppCompatActivity {
                     Log.e("lr","验证码错误");
                     btnConfirm.setText("获取验证码");
                     btnConfirm.setClickable(true);
-                    i = 60;
+                    i = 0;
+                    edtPwd.setText("");
+                    edtPwd2.setText("");
+                    edtConfirm.setText("");
                 }
             }
+
         }
     };
+
+    /**
+     * 向服务端发送信息，并返回值
+     */
+    private void sendUserInfo() {
+        OkHttpClient client = new OkHttpClient();
+        User user = new User();
+        user.setPhone(phone);
+        user.setPwd(pwd);
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        RequestBody requestBody = FormBody.create(MediaType.parse("application/json; charset=utf-8"),json);
+        Log.i("lr","发送的信息+json");
+        Request request = new Request.Builder()
+                .post(requestBody)
+                .url(ServerConfig.SERVER_HOME+"AddUserServlet")
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                try {
+                    String str = response.body().string();
+                    Log.i("lr","返回的信息"+ str +"龙瑞");
+                    Message msg = Message.obtain();
+                    msg.what = 1;
+                    msg.obj = str;
+                    handler.sendMessage(msg);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
+
     /**
      * 销毁SMSSDK
      */

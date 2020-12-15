@@ -5,18 +5,37 @@ import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
+import android.text.TextUtils;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ShareCompat;
 
+import com.example.myapplication.entity.User;
+import com.example.myapplication.util.ServerConfig;
 import com.example.myapplication.view.ForgetPwdActivity;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 
 public class LoginActivity extends AppCompatActivity {
@@ -26,9 +45,37 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnRegist;//注册按钮
     private ImageView imgHidePwd;//隐藏密码
     private boolean isPwdVisible = false;//密码是否可见
-    private String user,pwd;
+    private String phone,pwd;
     private TextView forgetPwd;
     private CustomVideoView videoview;
+    private Handler handler = new Handler(){
+        @Override
+        public void handleMessage(@NonNull Message msg) {
+            switch (msg.what){
+                case 1:
+                    String a = (String) msg.obj;
+                    if (a.equals("1")) {
+                        Toast.makeText(getApplicationContext(),"请先去注册",Toast.LENGTH_LONG).show();
+                    }else if(a.equals("3")){
+                        Toast.makeText(getApplicationContext(),"该号码已经被注册，忘记密码，请找回",Toast.LENGTH_LONG).show();
+                    }else {
+                        Gson gson = new Gson();
+                        ServerConfig.USER_INFO = gson.fromJson(a,User.class);
+                        ServerConfig.USER_ID = ServerConfig.USER_INFO.getId();
+                        SharedPreferences sd = getSharedPreferences("Login",MODE_PRIVATE);
+                        SharedPreferences.Editor editor = sd.edit();
+                        editor.putString("name",phone);
+                        editor.putString("pwd",pwd);
+                        editor.putString("info",a);
+                        editor.commit();
+                        Intent intent = new Intent();
+                        intent.setClass(getApplicationContext(), FragmentTabHost.class);
+                        startActivity(intent);
+                    }
+                    break;
+            }
+        }
+    };
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -43,7 +90,7 @@ public class LoginActivity extends AppCompatActivity {
      * 设置背景视频
      */
     private void setVideo() {
-        videoview.setVideoURI(Uri.parse("android.resource://"+getPackageName()+"/"+R.raw.sport));
+        videoview.setVideoURI(Uri.parse("android.resource://"+getPackageName()+"/"+ R.raw.sport));
 
         //播放
         videoview.start();
@@ -85,19 +132,15 @@ public class LoginActivity extends AppCompatActivity {
         public void onClick(View view) {
             switch (view.getId()){
                 case R.id.login:
-                    getValues();
-                    SharedPreferences sd = getSharedPreferences("Login",MODE_PRIVATE);
-                    SharedPreferences.Editor editor = sd.edit();
-                    editor.putString("name",user);
-                    editor.putString("pwd",pwd);
-                    editor.commit();
-                    Intent intent = new Intent();
-                    intent.setClass(getApplicationContext(),FragmentTabHost.class);
-                    startActivity(intent);
+                    phone = edtUser.getText().toString();
+                    pwd = edtPwd.getText().toString();
+                    if(judgePhoneNums(phone)){
+                        getValues();
+                    }
                     break;
                 case R.id.regist:
                     Intent intent1 = new Intent();
-                    intent1.setClass(getApplicationContext(),RegistActivity.class);
+                    intent1.setClass(getApplicationContext(), RegistActivity.class);
                     startActivity(intent1);
                     break;
                 case R.id.hidepwd:
@@ -117,10 +160,45 @@ public class LoginActivity extends AppCompatActivity {
      * 获得用户登录信息,并判断是否正确
      */
     private void getValues() {
-        user = edtUser.getText().toString();
-        pwd = edtPwd.getText().toString();
         //数据库判断账户是否正确
+        Log.i("lr","发送信息");
+        OkHttpClient client = new OkHttpClient();
+        User user = new User();
+        user.setPhone(phone);
+        user.setPwd(pwd);
+        Gson gson = new Gson();
+        String json = gson.toJson(user);
+        RequestBody requestBody = FormBody.create(MediaType.parse("application/json; charset=utf-8"),json);
+        Log.i("lr","发送的信息+json");
+                Request request = new Request.Builder()
+                        .post(requestBody)
+                        .url(ServerConfig.SERVER_HOME+"FindUserServlet")
+                        .build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                try {
+                    String str = response.body().string();
+                    Log.i("lr","返回的信息"+ str +"龙瑞");
+                    Message msg = Message.obtain();
+                    msg.what = 1;
+                    msg.obj = str;
+                    handler.sendMessage(msg);
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
+
 
     /**
      * 设置密码是否可见
@@ -154,6 +232,50 @@ public class LoginActivity extends AppCompatActivity {
         super.onStop();
         videoview.stopPlayback();
     }
+    /**
+     * 判断电话号码是否正确
+     * @param phone
+     * @return
+     */
+    private boolean judgePhoneNums(String phone) {
+        if (isMatchLength(phone, 11)
+                && isMobileNO(phone)) {
+            return true;
+        }
+        Toast.makeText(this, "手机号码输入有误！", Toast.LENGTH_SHORT).show();
+        return false;
+    }
 
+    /**
+     * 判断字符串长度
+     * @param str
+     * @param length
+     * @return
+     */
+    public static boolean isMatchLength(String str, int length) {
+        if (str.isEmpty()) {
+            return false;
+        } else {
+            return str.length() == length ? true : false;
+        }
+    }
+
+    /**
+     * 判断电话号码前三位是否符合标准
+     * @param mobileNums
+     * @return
+     */
+    public static boolean isMobileNO(String mobileNums) {
+        /*
+         * 移动：134、135、136、137、138、139、150、151、157(TD)、158、159、187、188
+         * 联通：130、131、132、152、155、156、185、186 电信：133、153、180、189、（1349卫通）
+         * 总结起来就是第一位必定为1，第二位必定为3或5或8，其他位置的可以为0-9
+         */
+        String telRegex = "[1][358]\\d{9}";// "[1]"代表第1位为数字1，"[358]"代表第二位可以为3、5、8中的一个，"\\d{9}"代表后面是可以是0～9的数字，有9位。
+        if (TextUtils.isEmpty(mobileNums))
+            return false;
+        else
+            return mobileNums.matches(telRegex);
+    }
 
 }

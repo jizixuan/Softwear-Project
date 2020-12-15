@@ -83,6 +83,7 @@ public class IconItemActivity extends AppCompatActivity {
         num=request.getDoubleExtra("num",0);
         date=request.getStringExtra("date");
         note=request.getStringExtra("note");
+
         byte[] data=request.getByteArrayExtra("bitmap");
     }
     private void setListener() {

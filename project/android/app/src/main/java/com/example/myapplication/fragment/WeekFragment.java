@@ -93,6 +93,7 @@ public class WeekFragment extends Fragment {
                                         iconItem.setImg(billType.getImg());
                                         iconItem.setNote(jsonObject.getString("note"));
                                         iconItem.setNum(jsonObject.getDouble("num"));
+                                        iconItem.setId(jsonObject.getInt("id"));
                                         iconItem.setType(billType.getName());
                                         iconItem.setNumType(billType.getNumType());
                                         bills.add(iconItem);

@@ -31,10 +31,18 @@ import com.baidu.ocr.ui.camera.CameraActivity;
 import com.baidu.ocr.ui.camera.CameraNativeHelper;
 import com.baidu.ocr.ui.camera.CameraView;
 import com.example.myapplication.R;
+import com.example.myapplication.note.entity.NoteItem;
 
 import java.io.File;
 import java.net.URI;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+
 public class SimpleTextActivity extends AppCompatActivity {
     private boolean hasGotToken = false;
 
@@ -186,7 +194,7 @@ public class SimpleTextActivity extends AppCompatActivity {
         for (Object o : list) {
             if (o instanceof WordSimple) {
                 stringBuilder.append(((WordSimple) o).getWords());
-                stringBuilder.append("\n\n");
+                stringBuilder.append("");
             }
         }
         return stringBuilder.toString();
@@ -237,6 +245,12 @@ public class SimpleTextActivity extends AppCompatActivity {
                 Uri uri = data.getData();
                 recEnhancedText(getRealPathFromURI(uri));
             }
+        }else if (requestCode ==5){
+            Bundle bundle = data.getBundleExtra("note");
+            Intent intent = new Intent();
+            intent.putExtra("note",bundle);
+            setResult(7,intent);
+            finish();
         }
     }
 
@@ -265,7 +279,11 @@ public class SimpleTextActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                infoTextView.setText(text);
+                Intent i = new Intent(SimpleTextActivity.this, NoteItemActivity.class);
+                i.putExtra("note",text);
+                i.putExtra("type","scan");
+                i.putExtra("date",getDate());
+                startActivityForResult(i,5);
             }
         });
     }
@@ -320,5 +338,11 @@ public class SimpleTextActivity extends AppCompatActivity {
                 Toast.makeText(SimpleTextActivity.this, "token获取失败.........", Toast.LENGTH_SHORT).show();
             }
         }, getApplicationContext(), "grpYE0miIwwNVDGhD6D2BpM8", "7qnNI1F7LNLLR2GfQkuwIwrSwqMt1401");
+    }
+    private String getDate(){
+        Date date = new Date();
+        DateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        final String str = format.format(date);
+        return str;
     }
 }

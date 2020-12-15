@@ -2,6 +2,7 @@ package com.example.myapplication.view;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +33,7 @@ public class ForgetPwdActivity extends AppCompatActivity {
     private Button btnConfirm;
     private Button btnUpdate;
     private ImageView imgBack;
+    private String phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -96,6 +98,9 @@ public class ForgetPwdActivity extends AppCompatActivity {
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {// 提交验证码成功
                         Toast.makeText(getApplicationContext(), "提交验证码成功",
                                 Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(ForgetPwdActivity.this,NewPwdActivity.class);
+                        intent.putExtra("phone",phone);
+                        startActivity(intent);
                     } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                         Toast.makeText(getApplicationContext(), "正在获取验证码",
                                 Toast.LENGTH_SHORT).show();
@@ -110,7 +115,7 @@ public class ForgetPwdActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            String phone = phone1.getText().toString();
+            phone = phone1.getText().toString();
             switch (view.getId()){
                 case R.id.img_back1:
                     finish();

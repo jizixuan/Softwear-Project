@@ -1,7 +1,5 @@
 package com.example.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,11 +14,24 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.example.myapplication.view.ForgetPwdActivity;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.util.ServerConfig;
+import com.google.gson.Gson;
 import com.mob.MobSDK;
+
+import java.io.IOException;
 
 import cn.smssdk.EventHandler;
 import cn.smssdk.SMSSDK;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ChangePhoneActivity extends AppCompatActivity {
     String APPKEY = "317d3a41cc848";
@@ -31,6 +42,7 @@ public class ChangePhoneActivity extends AppCompatActivity {
     private Button btnConfirm;
     private Button btnUpdate;
     private ImageView imgBack;
+    private String phone;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -95,6 +107,8 @@ public class ChangePhoneActivity extends AppCompatActivity {
                     if (event == SMSSDK.EVENT_SUBMIT_VERIFICATION_CODE) {// 提交验证码成功
                         Toast.makeText(getApplicationContext(), "提交验证码成功",
                                 Toast.LENGTH_SHORT).show();
+                        ServerConfig.USER_INFO.setPhone(phone);
+                        updateInfo();
                         //保存到数据库并返回到个人信息界面
                     } else if (event == SMSSDK.EVENT_GET_VERIFICATION_CODE) {
                         Toast.makeText(getApplicationContext(), "正在获取验证码",
@@ -106,11 +120,44 @@ public class ChangePhoneActivity extends AppCompatActivity {
             }
         }
     };
+    /**
+     * 更新用户信息
+     */
+    private void updateInfo(){
+        Gson gson = new Gson();
+        String json = gson.toJson(ServerConfig.USER_INFO);
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = FormBody.create(MediaType.parse("application/json; charset=utf-8"),json);
+        Log.i("lr","发送的信息+json");
+        Request request = new Request.Builder()
+                .post(requestBody)
+                .url(ServerConfig.SERVER_HOME+"UpdateUserServlet")
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                try {
+                    String str = response.body().string();
+                    Log.i("lr","返回的信息"+ str +"龙瑞");
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+    }
     class MyListener implements View.OnClickListener{
 
         @Override
         public void onClick(View view) {
-            String phone = phone1.getText().toString();
+            phone = phone1.getText().toString();
             switch (view.getId()){
                 case R.id.img_back1:
                     finish();

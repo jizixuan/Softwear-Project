@@ -16,7 +16,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.myapplication.entity.BillType;
+import com.example.myapplication.entity.User;
 import com.example.myapplication.util.ServerConfig;
+import com.google.gson.Gson;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -94,6 +96,10 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
                 String pwd = getSharedPreferences("Login",MODE_PRIVATE).getString("pwd","");
                 Log.d("lr","龙瑞"+name+pwd+"龙瑞");
                 if(name!=null && !name.equals("") && pwd!=null && !pwd.equals("")){
+                    String info = getSharedPreferences("Login",MODE_PRIVATE).getString("info","");
+                    Gson gson = new Gson();
+                    ServerConfig.USER_INFO = gson.fromJson(info, User.class);
+                    ServerConfig.USER_ID = ServerConfig.USER_INFO.getId();
                     //从闪屏界面跳转到首界面
                     Intent intent = new Intent(WelcomeActivity.this, FragmentTabHost.class);
                     startActivity(intent);
@@ -143,6 +149,10 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
                 String pwd = getSharedPreferences("Login",MODE_PRIVATE).getString("pwd","");
                 Log.d("lr","龙瑞"+name+pwd+"龙瑞");
                 if(name!=null && !name.equals("") && pwd!=null && !pwd.equals("")){
+                    String info = getSharedPreferences("Login",MODE_PRIVATE).getString("info","");
+                    Gson gson = new Gson();
+                    ServerConfig.USER_INFO = gson.fromJson(info, User.class);
+                    ServerConfig.USER_ID = ServerConfig.USER_INFO.getId();
                     //从闪屏界面跳转到首界面
                     Intent intent = new Intent(WelcomeActivity.this, FragmentTabHost.class);
                     startActivity(intent);
@@ -150,6 +160,7 @@ public class WelcomeActivity extends AppCompatActivity implements View.OnClickLi
                     Intent intent = new Intent(WelcomeActivity.this, LoginActivity.class);
                     startActivity(intent);
                 }
+                finish();
                 finish();
                 if (runnable != null) {
                     handler.removeCallbacks(runnable);

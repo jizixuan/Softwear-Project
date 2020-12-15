@@ -35,10 +35,12 @@ import com.example.myapplication.adapter.DateAdapter;
 import com.example.myapplication.entity.BillItem;
 import com.example.myapplication.entity.BillItemMessage;
 import com.example.myapplication.entity.BillType;
+import com.example.myapplication.entity.Budget;
 import com.example.myapplication.entity.DateBill;
 import com.example.myapplication.note.activity.NoteActivity;
 import com.example.myapplication.util.ConfigUtil;
 import com.example.myapplication.util.ServerConfig;
+import com.google.gson.Gson;
 import com.scwang.smartrefresh.layout.SmartRefreshLayout;
 import com.scwang.smartrefresh.layout.api.RefreshLayout;
 import com.scwang.smartrefresh.layout.listener.OnLoadMoreListener;
@@ -89,6 +91,7 @@ public class MainActivity extends Fragment {
     private DateAdapter dateAdapter;
     private TextView bill;
     private TextView wallet;
+    private Double value;//预算
 
     List<DateBill> dateBills;
     private OkHttpClient okHttpClient=new OkHttpClient();
@@ -187,6 +190,19 @@ public class MainActivity extends Fragment {
                     income.setText(String.format("%.2f", incomeValue));
                     expenditure.setText(String.format("%.2f", expenditureValue));
                     break;
+                case 2:
+                    String s3 = (String) msg.obj;
+                    Gson gson = new Gson();
+                    Budget budget  = gson.fromJson(s3,Budget.class);
+                    if(budget.getBudget() != 0){
+                        value = budget.getBudget();
+                        ServerConfig.BUDGET = value;
+                        Log.i("lr","获取预算"+value);
+                    }else{
+                        value = 0.0;
+                        ServerConfig.BUDGET = 0.0;
+                    }
+                    break;
             }
         }
     };
@@ -203,6 +219,8 @@ public class MainActivity extends Fragment {
         showDatePicker();
         setLinstener();
         setRefreshLayout();
+        getBudget();
+        downImg();
         return root;
     }
 
@@ -405,7 +423,8 @@ public class MainActivity extends Fragment {
                     break;
                 case R.id.wallet:
                     Intent intent5 = new Intent(root.getContext(),BudgetActivity.class);
-                    startActivity(intent5);
+                    intent5.putExtra("budget",value+"");
+                    startActivityForResult(intent5,1);
                     break;
             }
         }
@@ -689,5 +708,87 @@ public class MainActivity extends Fragment {
         }else{
             deleteItem(message.getId(), message.getTypeName(),message.getNum());
         }
+    }
+    /**
+     * 获取预算
+     */
+    private void getBudget() {
+        OkHttpClient client = new OkHttpClient();
+        FormBody.Builder formBody = new FormBody.Builder();
+        formBody.add("id",ServerConfig.USER_ID+"");
+        final Request request = new Request.Builder()
+                .post(formBody.build())
+                .url(ServerConfig.SERVER_HOME+"GetBudgetByIdServlet")
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String str = response.body().string();
+                Message msg = handler.obtainMessage();
+                msg.what = 2;
+                msg.obj = str;
+                handler.sendMessage(msg);
+            }
+        });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 1:
+                getBudget();
+                Log.i("lr","ccccc");
+                break;
+        }
+    }
+    /**
+     * 下载图片
+     */
+    public void downImg(){
+        OkHttpClient client = new OkHttpClient();
+        FormBody.Builder formBody = new FormBody.Builder();
+        formBody.add("img", ServerConfig.USER_INFO.getPhone()+".jpg");
+        final Request request = new Request.Builder()
+                .post(formBody.build())
+                .url(ServerConfig.SERVER_HOME+"DownImgServlet")
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                InputStream inputStream = response.body().byteStream();
+                String files = getContext().getFilesDir().getAbsolutePath();
+                String imgs = files+"/imgs";
+                //判断这个目录是否存在
+                File dirImgs = new File(imgs);
+                if (!dirImgs.exists()){
+                    //如果目录不存在创建目录
+                    dirImgs.mkdir();
+                }
+                String imgPath = imgs + "/" + ServerConfig.USER_INFO.getPhone()+".jpg";
+                Log.i("lr",imgPath+"龙龟是发送的阿三啊啊");
+                OutputStream out = new FileOutputStream(imgPath);
+                int b = -1;
+                while ((b=inputStream.read())!=-1){
+                    out.write(b);
+                    out.flush();
+                }
+                inputStream.close();
+                out.close();
+            }
+        });
+
     }
 }

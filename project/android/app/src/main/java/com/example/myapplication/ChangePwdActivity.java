@@ -1,17 +1,30 @@
 package com.example.myapplication;
 
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.os.Bundle;
 import android.text.method.HideReturnsTransformationMethod;
 import android.text.method.PasswordTransformationMethod;
+import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.myapplication.R;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.myapplication.util.ServerConfig;
+import com.google.gson.Gson;
+
+import java.io.IOException;
+
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.FormBody;
+import okhttp3.MediaType;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.RequestBody;
+import okhttp3.Response;
 
 public class ChangePwdActivity extends AppCompatActivity {
     private boolean isPwdVisible1 = false;
@@ -20,6 +33,7 @@ public class ChangePwdActivity extends AppCompatActivity {
     private String oldPwd,newPwd,newPwd1;
     private EditText edtOldPwd,edtNewPwd,edtNewPwd1;
     private ImageView imghide,imghide1,imghide2,imgBack;
+    private Button btnConfirm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +49,9 @@ public class ChangePwdActivity extends AppCompatActivity {
         imghide.setOnClickListener(myListener);
         imghide2.setOnClickListener(myListener);
         imghide1.setOnClickListener(myListener);
+        imgBack.setOnClickListener(myListener);
+        btnConfirm.setOnClickListener(myListener);
+
     }
 
     private void initViews() {
@@ -45,6 +62,7 @@ public class ChangePwdActivity extends AppCompatActivity {
         imghide = findViewById(R.id.hidepwd);
         imghide1 = findViewById(R.id.hidepwd1);
         imghide2 = findViewById(R.id.hidepwd2);
+        btnConfirm = findViewById(R.id.btn_confirm_new_pwd);
     }
 
     class MyListener implements View.OnClickListener{
@@ -76,15 +94,55 @@ public class ChangePwdActivity extends AppCompatActivity {
         newPwd = edtNewPwd.getText().toString();
         newPwd1 = edtNewPwd1.getText().toString();
         //判断旧密码是否一致
-
-        //判断两次密码是否一致
-        if (newPwd1.equals(newPwd)){
-            //一致的话提交到数据库
-        }else{
-            edtNewPwd.setText("");
-            edtNewPwd1.setText("");
-            Toast.makeText(getApplicationContext(),"两次密码不一致，请重新输入",Toast.LENGTH_LONG).show();
+        if(ServerConfig.USER_INFO.getPwd().equals(oldPwd)){
+            //判断两次密码是否一致
+            if (newPwd1.equals(newPwd)){
+                //一致的话提交到数据库
+                ServerConfig.USER_INFO.setPwd(newPwd);
+                updateInfo();
+            }else{
+                edtNewPwd.setText("");
+                edtNewPwd1.setText("");
+                Toast.makeText(ChangePwdActivity.this,"两次密码不一致，请重新输入",Toast.LENGTH_LONG).show();
+            }
         }
+
+    }
+    /**
+     * 更新用户信息
+     */
+    private void updateInfo(){
+        Gson gson = new Gson();
+        String json = gson.toJson(ServerConfig.USER_INFO);
+        OkHttpClient client = new OkHttpClient();
+        RequestBody requestBody = FormBody.create(MediaType.parse("application/json; charset=utf-8"),json);
+        Log.i("lr","发送的信息密码"+json);
+        Request request = new Request.Builder()
+                .post(requestBody)
+                .url(ServerConfig.SERVER_HOME+"UpdateUserServlet")
+                .build();
+        Call call = client.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+
+                try {
+                    String str = response.body().string();
+                    Log.i("lr","返回的信息"+ str +"龙瑞");
+                    if(str.equals("1")){
+                        finish();
+                    }
+
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     /**

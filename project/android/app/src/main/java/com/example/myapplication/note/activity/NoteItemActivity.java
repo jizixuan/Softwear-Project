@@ -122,6 +122,7 @@ public class NoteItemActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 //存入数据库
+                Log.i("lr","longrui");
                 String mContent = etNote.getText().toString();
                 String title=etTitle.getText().toString();
                 String subContent;
@@ -189,6 +190,47 @@ public class NoteItemActivity extends AppCompatActivity {
                     overridePendingTransition(R.anim.slide_in_left,
                             R.anim.slide_out_right);
                 }else if (type.equals("create")){
+                    //创建
+                    OkHttpClient okHttpClient=new OkHttpClient();
+                    FormBody formBody =
+                            new FormBody.Builder()
+                                    .add("userId", ServerConfig.USER_ID+"")
+                                    .add("content",mContent)
+                                    .add("createTime",str)
+                                    .add("title",title)
+                                    .add("subContent",subContent)
+                                    .build();
+                    //创建请求对象
+                    Request request = new Request.Builder()
+                            .url(ServerConfig.SERVER_HOME + "InsertNoteServlet")
+                            .method("POST", formBody)
+                            .post(formBody)
+                            .build();
+                    //3. 创建CALL对象
+                    Call call = okHttpClient.newCall(request);
+                    //3. 异步方式提交请求并获取响应
+                    call.enqueue(new Callback() {
+                        @Override
+                        public void onFailure(Call call, IOException e) {
+                            Log.i("lww", "请求失败");
+                        }
+
+                        @Override
+                        public void onResponse( Call call,  Response response) throws IOException {
+                            //获取服务端返回的数据
+                            String result = response.body().string();
+                            noteItem.setId(Integer.parseInt(result));
+                            Bundle bundle = new Bundle();
+                            bundle.putSerializable("note",noteItem);
+                            intent.putExtra("note",bundle);
+                            setResult(5,intent);
+                            finish();
+                            overridePendingTransition(R.anim.slide_in_left,
+                                    R.anim.slide_out_right);
+                        }
+                    });
+
+                }else if (type.equals("create") || type.equals("scan")){
                     //创建
                     OkHttpClient okHttpClient=new OkHttpClient();
                     FormBody formBody =
@@ -394,6 +436,9 @@ public class NoteItemActivity extends AppCompatActivity {
         }else if(type.equals("remind")){
             pvTime.show();
             countNum.setText(0+"字");
+        }else if(type.equals("scan")){
+            etNote.setMovementMethod(LinkMovementMethod.getInstance());
+            etNote.setText(note);
         }
     }
     /**

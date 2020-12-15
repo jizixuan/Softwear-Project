@@ -37,15 +37,16 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:id="@+id/tv_personalNum"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="149dp"
-                    android:layout_marginBottom="48dp"
-                    android:layout_toRightOf="@+id/tv_personalName"
+                    android:layout_marginBottom="56dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_below="@+id/tv_personalName"
+                    android:layout_marginRight="20dp"
                     android:text="31"
                     android:textColor="#000000"
                     android:textSize="25sp" />
 
                 <TextView
+                    android:id="@+id/ss"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_personalNum"
@@ -146,31 +147,31 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_toRightOf="@+id/tv_personalMonth1"
                     android:text="600"
                     android:textColor="#000000"
-                    android:textSize="18sp" />
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tv_personalOutcome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="156dp"
+                    android:layout_marginLeft="126dp"
                     android:layout_marginBottom="15dp"
                     android:layout_toRightOf="@+id/tv_personalMonth1"
                     android:text="600"
                     android:textColor="#000000"
-                    android:textSize="18sp" />
+                    android:textSize="12sp" />
 
                 <TextView
                     android:id="@+id/tv_personalBalance"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginLeft="250dp"
+                    android:layout_marginLeft="225dp"
                     android:layout_marginBottom="14dp"
                     android:layout_toRightOf="@+id/tv_personalMonth1"
                     android:text="600"
                     android:textColor="#000000"
-                    android:textSize="18sp" />
+                    android:textSize="12sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
@@ -186,7 +187,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_marginLeft="155dp"
+                    android:layout_marginLeft="125dp"
                     android:layout_marginTop="20dp"
                     android:layout_toRightOf="@+id/tv_personalMonth1"
                     android:text="支出"
@@ -196,7 +197,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
-                    android:layout_marginLeft="251dp"
+                    android:layout_marginLeft="221dp"
                     android:layout_marginTop="20dp"
                     android:layout_toRightOf="@+id/tv_personalMonth1"
                     android:text="结余"
@@ -204,19 +205,28 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
 
             </RelativeLayout>
             <RelativeLayout
-                android:padding="15dp"
                 android:layout_width="match_parent"
                 android:layout_margin="15dp"
                 android:layout_height="wrap_content"
                 android:background="#ffffff"
                 android:id="@+id/personalBudget">
-
+                <com.king.view.circleprogressview.CircleProgressView
+                    android:id="@+id/Circle"
+                    android:layout_marginTop="5dp"
+                    android:layout_width="100dp"
+                    android:layout_height="80dp"
+                    app:cpvShowTick="false"
+                    app:cpvProgressColor="@color/bule"
+                    app:cpvStrokeWidth="5dp"
+                    app:cpvLabelTextSize="12dp"
+                    android:layout_below="@+id/tv_personalMonth"/>
                 <TextView
                     android:id="@+id/tv_personalMonth"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="11月总预算"
                     android:textSize="20sp"
+                    android:layout_marginLeft="20dp"
                     android:textColor="#000000" />
 
                 <TextView
@@ -232,38 +242,30 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:src="@mipmap/entrance"
                     android:layout_alignParentRight="true" />
 
-                <com.example.myapplication.view.Gua
-                    android:id="@+id/Circle"
-                    android:layout_width="125dp"
-                    android:layout_height="125dp"
-                    android:layout_below="@+id/tv_personalMonth"
-                    android:layout_marginLeft="20dp"
-                    app:radius="175"
-                    app:textColor="#000000" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_personalMonth"
-                    android:layout_marginLeft="44dp"
-                    android:layout_marginTop="33dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="15dp"
                     android:layout_toRightOf="@+id/Circle"
                     android:text="剩余预算："
                     android:textColor="#000000"
-                    android:textSize="15sp"/>
+                    android:textSize="13sp"/>
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_personalMonth"
-                    android:layout_marginLeft="43dp"
-                    android:layout_marginTop="68dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="40dp"
                     android:layout_toRightOf="@+id/Circle"
                     android:text="本月预算：" />
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_personalMonth"
-                    android:layout_marginLeft="46dp"
-                    android:layout_marginTop="101dp"
+                    android:layout_marginLeft="30dp"
+                    android:layout_marginTop="66dp"
                     android:layout_toRightOf="@+id/Circle"
                     android:text="本月支出：" />
 
@@ -273,10 +275,9 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_personalMonth"
                     android:layout_marginLeft="198dp"
-                    android:layout_marginTop="34dp"
+                    android:layout_marginTop="15dp"
                     android:layout_alignParentRight="true"
-                    android:layout_marginRight="20dp"
-                    android:text="6000"
+                    android:layout_marginRight="25dp"
                     android:textColor="#000000"
                     android:textSize="15sp" />
 
@@ -286,24 +287,17 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_personalBudget"
                     android:layout_alignParentRight="true"
-                    android:layout_marginTop="14dp"
-                    android:layout_marginRight="20dp"
-                    android:text="5000" />
-                <TextView
-                    android:layout_width="200dp"
-                    android:layout_height="wrap_content"
-                    android:text="—————————————————"
-                    android:layout_below="@+id/tv_personalBudget"
-                    android:layout_alignParentRight="true"/>
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="25dp"
+                    />
                 <TextView
                     android:id="@+id/tv_personalOut"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_below="@+id/tv_personalBudget"
+                    android:layout_below="@+id/tv_personalBudget1"
                     android:layout_alignParentRight="true"
-                    android:layout_marginTop="46dp"
-                    android:layout_marginRight="21dp"
-                    android:text="5000" />
+                    android:layout_marginTop="8dp"
+                    android:layout_marginRight="25dp" />
 
             </RelativeLayout>
             <Button
@@ -320,7 +314,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                 android:layout_height="wrap_content"
                 android:background="#ffffff"
                 android:layout_margin="15dp"
-                android:text="修改信息"
+                android:text="个人信息"
                 android:textSize="25sp"/>
             <Button
                 android:id="@+id/btn_personalExit"

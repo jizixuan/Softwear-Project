@@ -85,9 +85,10 @@ public class WeekDetialFragment extends Fragment {
                     try {
                         JSONArray jsonArray=new JSONArray(str);
                         Log.e("jzxjsonArray", jsonArray.length()+"");
+                        IconList iconList = null;
                         for(int i=0;i<jsonArray.length();i++){
                             JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                            IconList iconList = new IconList();
+                            iconList = new IconList();
                             if(iconList.getDate()==null){
                                 Date date = stringToDate(jsonObject.getString("date"), "yyyy-MM-dd");
                                 iconList.setDate(date);
@@ -101,12 +102,13 @@ public class WeekDetialFragment extends Fragment {
                             iconItem.setNote(jsonObject.getString("note"));
                             iconItem.setNum(jsonObject.getDouble("num"));
                             iconItem.setType(billType.getName());
+                            iconItem.setId(jsonObject.getInt("id"));
                             iconItem.setNumType(billType.getNumType());
                             bills.add(iconItem);
                             Collections.sort(bills,new NumSort());
                             iconList.setBills(bills);
-                            dateBills.add(iconList);
                         }
+                        dateBills.add(iconList);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -287,7 +289,7 @@ public class WeekDetialFragment extends Fragment {
         for (int i = 0; i < 7; i++) {
             calendar.set(Calendar.DAY_OF_WEEK, firstDayOfWeek + i);
             // 获取星期的显示名称，例如：周一、星期一、Monday等等
-            String day = new SimpleDateFormat("MM-dd").format(calendar.getTime());
+            String day = new SimpleDateFormat("yyyy-MM-dd").format(calendar.getTime());
 
             list.add(day);
         }

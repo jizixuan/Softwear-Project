@@ -72,15 +72,14 @@
                     android:layout_height="wrap_content"
                     android:text="收入"
                     android:layout_below="@+id/tv_billBalance"
-                    android:layout_marginStart="50dp"/>
+                    android:layout_marginStart="40dp"/>
                 <TextView
                     android:id="@+id/tv_billIncome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_billBalance"
-                    android:layout_marginStart="85dp"
+                    android:layout_marginStart="70dp"
                     android:layout_marginTop="-7dp"
-                    android:text="600.00"
                     android:textColor="#000000"
                     android:textSize="20sp" />
                 <ImageView
@@ -94,15 +93,14 @@
                     android:layout_height="wrap_content"
                     android:text="支出"
                     android:layout_below="@+id/tv_billBalance"
-                    android:layout_marginStart="270dp"/>
+                    android:layout_marginStart="210dp"/>
                 <TextView
                     android:id="@+id/tv_billOutcome"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/tv_billBalance"
-                    android:layout_marginStart="315dp"
+                    android:layout_marginStart="245dp"
                     android:layout_marginTop="-7dp"
-                    android:text="600.00"
                     android:textColor="#000000"
                     android:textSize="20sp" />
             </RelativeLayout>

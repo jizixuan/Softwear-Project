@@ -11,6 +11,7 @@ public class IconItem {
     private String numType;
     private String note;
     private String date;
+    private int id;
 
     public IconItem() {
     }
@@ -22,6 +23,14 @@ public class IconItem {
         this.numType = numType;
         this.note = note;
         this.date = date;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public Bitmap getImg() {
