@@ -12,6 +12,7 @@
 
     <application
         android:usesCleartextTraffic="true"
+        android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="校园账单"
@@ -43,17 +44,9 @@
             </intent-filter>
         </receiver>
 
-        <activity android:name=".note.activity.NoteActivity" />
-        <activity android:name=".note.activity.NoteItemActivity" />
         <activity
             android:name=".note.activity.alarmActivity"
             tools:ignore="DuplicateActivity" />
-        <activity android:name=".IconItemActivity" />
-        <activity android:name=".AddBillActivity" />
-        <activity android:name=".InOrOutDetailActivity" />
-        <activity android:name=".FragmentTabHost" />
-        <activity android:name=".BillDetailsActivity" />
-        <activity android:name=".IncomeDetailsActivity" />
         <activity android:name=".LoginActivity" />
         <activity android:name=".RegistActivity" />
         <activity

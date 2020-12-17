@@ -2,7 +2,7 @@
 <LinearLayout
     android:id="@+id/bill_type"
     android:layout_marginTop="15dp"
-    android:layout_marginLeft="30dp"
+    android:layout_marginLeft="13dp"
     android:orientation="vertical"
     xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="wrap_content"
     android:layout_height="wrap_content">
