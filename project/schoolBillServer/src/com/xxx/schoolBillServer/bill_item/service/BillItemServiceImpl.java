@@ -1,33 +1,41 @@
 package com.xxx.schoolBillServer.bill_item.service;
 
-import java.util.Date;
 import java.util.List;
+
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.xxx.schoolBillServer.bill_item.dao.BillItemDaoImpl;
 import com.xxx.schoolBillServer.entity.BillItem;
 import com.xxx.schoolBillServer.entity.BillMonth;
-
+@Service
+@Transactional(readOnly = false)
 public class BillItemServiceImpl {
-	public BillItemDaoImpl billItemDaoImpl=new BillItemDaoImpl();
-	public int insertBillItem(Double num,String note,Date date,int year,int month,int day,int typeId,int userId){
-		return billItemDaoImpl.insertBillItem(num, note, date, year, month, day, typeId, userId);
+	
+	@Resource
+	private BillItemDaoImpl billItemDaoImpl;
+	
+	public int insertBillItem(BillItem billItem) {
+		return this.billItemDaoImpl.insertBillItem(billItem);
 	}
 	public List<BillItem> getBillItemListByDate(int year,int month,int userId){
-		return billItemDaoImpl.getBillItemListByDate(year, month, userId);
+		return this.billItemDaoImpl.getBillItemListByDate(year, month, userId);
 	}
 	public boolean updateBill(BillItem billItem,int userId) {
-		return billItemDaoImpl.updateBill(billItem, userId);
+		return this.billItemDaoImpl.updateBill(billItem, userId);
 	}
 	public boolean deleteBill(int id,int userId) {
-		return billItemDaoImpl.deleteBill(id, userId);
+		return this.billItemDaoImpl.deleteBill(id, userId);
 	}
 	public List<BillItem> getBillItemListOrderByNum(int year,int month,int userId){
-		return billItemDaoImpl.getBillItemListOrderByNum(year, month, userId);
+		return this.billItemDaoImpl.getBillItemListOrderByNum(year, month, userId);
 	}
 	public List<BillMonth> getBillMonthListByYear(int year,int id) {
-		return billItemDaoImpl.getBillMonthListByYear(year,id);
+		return this.billItemDaoImpl.getBillMonthListByYear(year,id);
 	}
 	public int getBillNum(String month,String id) {
-		return billItemDaoImpl.getBillNum(month,id);
+		return this.billItemDaoImpl.getBillNum(month,id);
 	}
 }

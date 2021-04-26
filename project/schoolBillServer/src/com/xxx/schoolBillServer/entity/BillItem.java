@@ -2,15 +2,42 @@ package com.xxx.schoolBillServer.entity;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "bill_item")
 public class BillItem {
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;
 	private double num;
 	private String note;
 	private Date date;
+	@Column(name = "type_id")
 	private int typeId;
+	@Column(name = "user_id")
+	private int userId;
 	private int year;
 	private int month;
 	private int day;
+	
+	//级联刷新
+//	@OneToOne(cascade = CascadeType.REFRESH)
+//	@JoinColumn(name="type_id" ,insertable =false ,updatable =false)
+//	private BillType billType;
+//	@ManyToOne
+//	@JoinColumn(name="user_id",insertable =false ,updatable =false)
+//	private User user;
 	
 	public BillItem() {
 		super();
@@ -89,10 +116,43 @@ public class BillItem {
 		this.day = day;
 	}
 
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
+	}
+
 	@Override
 	public String toString() {
 		return "BillItem [id=" + id + ", num=" + num + ", note=" + note + ", date=" + date + ", typeId=" + typeId
-				+ ", year=" + year + ", month=" + month + ", day=" + day + "]";
+				+ ", userId=" + userId + ", year=" + year + ", month=" + month + ", day=" + day + "]";
 	}
+
+	
+//	public BillType getBillType() {
+//		return billType;
+//	}
+//
+//	public void setBillType(BillType billType) {
+//		this.billType = billType;
+//	}
+//	
+//	
+//	
+//	public User getUser() {
+//		return user;
+//	}
+//
+//	public void setUser(User user) {
+//		this.user = user;
+//	}
+
+	
+
+	
+
+	
 	
 }

@@ -1,12 +1,33 @@
 package com.xxx.schoolBillServer.entity;
 
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "user")
 public class User {
+	@Column(name = "img")
 	private String photo;//头像
 	private String sex;//性别
 	private String name;//昵称
 	private String pwd;//密码
 	private String phone;//电话号码
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private int id;//用户id
+//	@OneToMany(mappedBy="user", targetEntity=BillItem.class, 
+//	        cascade=CascadeType.ALL)
+//	private Set items = new HashSet<BillItem>();
+	
 	public User() {
 		super();
 		// TODO Auto-generated constructor stub
@@ -56,6 +77,13 @@ public class User {
 	public void setId(int id) {
 		this.id = id;
 	}
+	
+//	public Set getItems() {
+//		return items;
+//	}
+//	public void setItems(Set items) {
+//		this.items = items;
+//	}
 	@Override
 	public String toString() {
 		return "User [photo=" + photo + ", sex=" + sex + ", name=" + name + ", pwd=" + pwd + ", phone=" + phone
