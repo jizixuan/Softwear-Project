@@ -146,7 +146,6 @@ public class BillItemController {
 	@ResponseBody 
 	public String GetBillNumServlet(@RequestParam("month") String month, @RequestParam("id") String id) {
 		int a = billItemServiceImpl.getBillNum(month,id);
-		System.out.println(a+"");
 		String aString = ""+a;
 		return aString;
 	}

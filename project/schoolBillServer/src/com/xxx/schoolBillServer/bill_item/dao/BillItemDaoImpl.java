@@ -37,9 +37,9 @@ public class BillItemDaoImpl {
 //		try {
 //			pstm = con.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS);
 //			pstm.executeUpdate();
-//			ResultSet rs = pstm.getGeneratedKeys(); //»ñÈ¡½á¹û   
+//			ResultSet rs = pstm.getGeneratedKeys(); //è·å–ç»“æœ   
 //			if (rs.next()) {
-//				id = rs.getInt(1);//È¡µÃID
+//				id = rs.getInt(1);//å–å¾—ID
 //			} else {
 //				System.out.println("error");
 //			}
@@ -48,11 +48,10 @@ public class BillItemDaoImpl {
 //		}
 //		return id;
 //	}
-	//ĞŞ¸Äºó
+	//ä¿®æ”¹å
 	public int insertBillItem(BillItem billItem) {
 		Session session = this.sessionFactory.openSession();
 		Transaction tx = session.beginTransaction();
-		System.out.println(billItem.toString());
 		session.save(billItem);
 		tx.commit();
 		session.close();
@@ -98,7 +97,6 @@ public class BillItemDaoImpl {
 		query.setParameter("month", month);
 		query.setParameter("userId", userId);
 		billItems = query.list();
-		System.out.println(billItems.toString());
 		session.close();
 		return billItems;
 	}
@@ -227,11 +225,11 @@ public class BillItemDaoImpl {
         }
     }
 	/**
-	 * »ñÈ¡Ã¿¸öµÄÊÕÈë×Ü¶î
+	 * è·å–æ¯ä¸ªçš„æ”¶å…¥æ€»é¢
 	 * @param year
 	 * @return
 	 */
-	//Ã»¸Ä
+	//æ²¡æ”¹
 	public List<BillMonth> getBillMonthListByYear(int year,int id){
 		billMonths = new ArrayList<>();
 		Connection con = null;
@@ -279,11 +277,13 @@ public class BillItemDaoImpl {
 //		return a;
 //	}
 	public int getBillNum(String month,String id) {
-		String hql = "select count(*) from BillItem i where month=:month and id=:id";
-		Session session = sessionFactory.getCurrentSession();
-		Query query = session.createQuery(hql);
-		query.setParameter("id", id);
-		query.setParameter("month", month);
-		return (int) query.uniqueResult();
+		String hql = "select count(*) from BillItem i where i.month=:month and i.id=:id";
+		Session session = this.sessionFactory.openSession();
+		long count=(Long)session.createQuery("select count(*) from BillItem b where b.month='"+month+"' and b.userId='"+id+"'")
+                .uniqueResult();
+		int num=Integer.parseInt(String.valueOf(count));;
+		System.out.println(id+"");
+		session.close();
+		return num;
 	}
 }

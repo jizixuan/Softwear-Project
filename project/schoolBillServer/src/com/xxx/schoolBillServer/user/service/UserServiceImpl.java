@@ -1,10 +1,17 @@
 package com.xxx.schoolBillServer.user.service;
 
+import javax.annotation.Resource;
+
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.xxx.schoolBillServer.entity.User;
 import com.xxx.schoolBillServer.user.dao.UserDaoImpl;
-
+@Service
+@Transactional(readOnly = false)
 public class UserServiceImpl {
-	private UserDaoImpl userDaoImpl = new UserDaoImpl();
+	@Resource
+	private UserDaoImpl userDaoImpl;
 	public User findUser(String phone) {
 		return userDaoImpl.findUser(phone);
 	}

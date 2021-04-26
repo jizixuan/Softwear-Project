@@ -277,4 +277,9 @@ public class DateAdapter extends BaseAdapter {
         }
         return week;
     }
+    public void refresh(List<DateBill> dateBills)
+    {
+        this.dateBills=dateBills;
+        notifyDataSetChanged();
+    }
 }

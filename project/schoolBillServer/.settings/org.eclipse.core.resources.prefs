@@ -1,6 +1,10 @@
 eclipse.preferences.version=1
-encoding//src/com/xxx/schoolBillServer/bill_item/dao/BillItemDaoImpl.java=gbk
+encoding//src/com/xxx/schoolBillServer/bill_item/dao/BillItemDaoImpl.java=UTF-8
 encoding//src/com/xxx/schoolBillServer/bill_type/controller/BillTypeController.java=UTF-8
 encoding//src/com/xxx/schoolBillServer/bill_type/dao/BillTypeDapImpl.java=gbk
+encoding//src/com/xxx/schoolBillServer/budget/dao/BudgetDaoImpl.java=gbk
 encoding//src/com/xxx/schoolBillServer/entity/BillMonth.java=gbk
+encoding//src/com/xxx/schoolBillServer/entity/Budget.java=gbk
+encoding//src/com/xxx/schoolBillServer/entity/Note.java=UTF-8
 encoding//src/com/xxx/schoolBillServer/entity/User.java=gbk
+encoding//src/com/xxx/schoolBillServer/user/dao/UserDaoImpl.java=gbk

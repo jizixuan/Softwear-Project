@@ -1,11 +1,24 @@
 package com.xxx.schoolBillServer.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "note")
 public class Note {
-	private int id;         //笔记ID
-    private String content; //笔记内容
-    private String createTime; //笔记创建时间
-    private String title;  //   这里的title 指的是  笔记的第一行 一般都是纲要 用于显示纲要
-    private String subContent; //这里的subContent指的是 笔记的第二行，用于反应除了用户的开头   相当于内容的缩写
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	private int id;         //锟绞硷拷ID
+    private String content; //锟绞硷拷锟斤拷锟斤拷
+    private String createTime; //锟绞记达拷锟斤拷时锟斤拷
+    private String title;  //   锟斤拷锟斤拷锟絫itle 指锟斤拷锟斤拷  锟绞记的碉拷一锟斤拷 一锟姐都锟角革拷要 锟斤拷锟斤拷锟斤拷示锟斤拷要
+    private String subContent; //锟斤拷锟斤拷锟絪ubContent指锟斤拷锟斤拷 锟绞记的第讹拷锟叫ｏ拷锟斤拷锟节凤拷应锟斤拷锟斤拷锟矫伙拷锟侥匡拷头   锟洁当锟斤拷锟斤拷锟捷碉拷锟斤拷写
+    @Column(name = "user_id")
+    private int userId;
     
     
 	public Note() {
@@ -48,6 +61,13 @@ public class Note {
 	}
 	public void setSubContent(String subContent) {
 		this.subContent = subContent;
+	}
+	
+	public int getUserId() {
+		return userId;
+	}
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 	@Override
 	public String toString() {

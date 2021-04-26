@@ -110,63 +110,65 @@ public class MainActivity extends Fragment {
                     List<BillItem> billItems =new ArrayList<>();
                     try {
                         JSONArray jsonArray=new JSONArray(str);
-                        JSONObject jsonObject0 = (JSONObject) jsonArray.get(0);
-                        int day=jsonObject0.getInt("day");
-                        for(int i=0;i<jsonArray.length();i++) {
-                            JSONObject jsonObject = (JSONObject) jsonArray.get(i);
-                            int dayValue=jsonObject.getInt("day");
-                            if(day!=dayValue){
-                                JSONObject jsonObject1 = (JSONObject) jsonArray.get(i-1);
-                                Date date = stringToDate(jsonObject1.getString("date"), "yyyy-MM-dd");
-                                dateBill.setDate(date);
-                                dateBill.setExpenditure(dateExpenditureValue);
-                                dateBill.setIncome(dateIncomeValue);
-                                dateBill.setBills(billItems);
-                                dateBills.add(dateBill);
-
-                                day = dayValue;
-                                dateBill = new DateBill();
-                                dateIncomeValue = 0.0;
-                                dateExpenditureValue = 0.0;
-                                billItems = new ArrayList<>();
-
-                            }
-                            BillItem billItem=new BillItem();
-                            billItem.setNum(jsonObject.getDouble("num"));
-                            int id=jsonObject.getInt("typeId");
-                            BillType billType=ServerConfig.BILL_TYPES.get(id-1);
-                            billItem.setType(billType.getName());
-                            billItem.setId(jsonObject.getInt("id"));
-                            billItem.setNote(jsonObject.getString("note"));
-                            billItem.setNumType(billType.getNumType());
-                            if(billItem.getNumType().equals("+")){
-                                dateIncomeValue+=billItem.getNum();
-                            }else {
-                                dateExpenditureValue+=billItem.getNum();
-                            }
-                            billItem.setImg(billType.getImg());
-                            billItems.add(billItem);
-                            if(i==jsonArray.length()-1){
-                                if(day!=dayValue){
-                                    DateBill dateBill1=null;
-                                    dateBill1=new DateBill();
-                                    List<BillItem> billItems1 =new ArrayList<>();
-                                    billItems1.add(billItem);
-                                    dateBill1.setBills(billItems1);
-                                    Date date = stringToDate(jsonObject.getString("date"), "yyyy-MM-dd");
-                                    dateBill1.setDate(date);
-                                    dateBill1.setExpenditure(dateExpenditureValue);
-                                    dateBill1.setIncome(dateIncomeValue);
-                                    dateBills.add(dateBill1);
-                                }else{
+                        if(jsonArray.length()>0) {
+                            JSONObject jsonObject0 = (JSONObject) jsonArray.get(0);
+                            int day = jsonObject0.getInt("day");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                                int dayValue = jsonObject.getInt("day");
+                                if (day != dayValue) {
+                                    JSONObject jsonObject1 = (JSONObject) jsonArray.get(i - 1);
+                                    Date date = stringToDate(jsonObject1.getString("date"), "yyyy-MM-dd");
+                                    dateBill.setDate(date);
                                     dateBill.setExpenditure(dateExpenditureValue);
                                     dateBill.setIncome(dateIncomeValue);
                                     dateBill.setBills(billItems);
-                                    Date date = stringToDate(jsonObject.getString("date"), "yyyy-MM-dd");
-                                    dateBill.setDate(date);
                                     dateBills.add(dateBill);
+
+                                    day = dayValue;
+                                    dateBill = new DateBill();
+                                    dateIncomeValue = 0.0;
+                                    dateExpenditureValue = 0.0;
+                                    billItems = new ArrayList<>();
+
                                 }
-                                break;
+                                BillItem billItem = new BillItem();
+                                billItem.setNum(jsonObject.getDouble("num"));
+                                int id = jsonObject.getInt("typeId");
+                                BillType billType = ServerConfig.BILL_TYPES.get(id - 1);
+                                billItem.setType(billType.getName());
+                                billItem.setId(jsonObject.getInt("id"));
+                                billItem.setNote(jsonObject.getString("note"));
+                                billItem.setNumType(billType.getNumType());
+                                if (billItem.getNumType().equals("+")) {
+                                    dateIncomeValue += billItem.getNum();
+                                } else {
+                                    dateExpenditureValue += billItem.getNum();
+                                }
+                                billItem.setImg(billType.getImg());
+                                billItems.add(billItem);
+                                if (i == jsonArray.length() - 1) {
+                                    if (day != dayValue) {
+                                        DateBill dateBill1 = null;
+                                        dateBill1 = new DateBill();
+                                        List<BillItem> billItems1 = new ArrayList<>();
+                                        billItems1.add(billItem);
+                                        dateBill1.setBills(billItems1);
+                                        Date date = stringToDate(jsonObject.getString("date"), "yyyy-MM-dd");
+                                        dateBill1.setDate(date);
+                                        dateBill1.setExpenditure(dateExpenditureValue);
+                                        dateBill1.setIncome(dateIncomeValue);
+                                        dateBills.add(dateBill1);
+                                    } else {
+                                        dateBill.setExpenditure(dateExpenditureValue);
+                                        dateBill.setIncome(dateIncomeValue);
+                                        dateBill.setBills(billItems);
+                                        Date date = stringToDate(jsonObject.getString("date"), "yyyy-MM-dd");
+                                        dateBill.setDate(date);
+                                        dateBills.add(dateBill);
+                                    }
+                                    break;
+                                }
                             }
                         }
                     } catch (JSONException e) {
@@ -626,7 +628,6 @@ public class MainActivity extends Fragment {
                         billItem.setType(typeName);
                         billItem.setNum(num);
                         billItem.setNumType(billType.getNumType());
-
                         Bitmap bitmap = billType.getImg();
                         billItem.setImg(bitmap);
                         DateBill dateBill1 = dateBills.get(j);
@@ -635,6 +636,8 @@ public class MainActivity extends Fragment {
                         dateAdapter = new DateAdapter(dateBills, root.getContext(), R.layout.date_bill);
                         list.setAdapter(dateAdapter);
                         ConfigUtil.setListViewHeightBasedOnChildren(list);
+
+                        break;
                     } else {//日期改变则删除此元素后添加
                         DateBill dateBill1 = dateBills.get(j);
                         dateBill1.getBills().remove(i);
@@ -644,8 +647,9 @@ public class MainActivity extends Fragment {
                             dateBills.set(j, dateBill1);
                         }
                         addItem(num, dateValue, noteValue, typeName,id);
+
+                        break;
                     }
-                    break;
                 }
             }
         }
@@ -671,6 +675,7 @@ public class MainActivity extends Fragment {
         }
         for (int j = 0; j < dateBills.size(); j++) {
             DateBill dateBill = dateBills.get(j);
+
             for (int i = 0; i < dateBill.getBills().size(); i++) {
                 BillItem billItem = dateBill.getBills().get(i);
                 if (billItem.getId() == id){
@@ -678,6 +683,11 @@ public class MainActivity extends Fragment {
                     dateBill1.getBills().remove(i);
                     if (dateBill1.getBills().size()==0) {
                         dateBills.remove(j);
+                        if(dateBills.size()==0){
+                            dateBills.clear();
+                            dateAdapter.refresh(dateBills);
+                            break;
+                        }
                     } else {
                         if(billType.getNumType().equals("+")){
                             dateBill1.setIncome(dateBill1.getIncome()-num);
@@ -743,7 +753,7 @@ public class MainActivity extends Fragment {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 1:
-                getBudget();
+                ServerConfig.BUDGET = 0;
                 Log.i("lr","ccccc");
                 break;
         }

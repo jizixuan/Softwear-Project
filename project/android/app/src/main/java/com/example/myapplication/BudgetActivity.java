@@ -170,6 +170,8 @@ public class BudgetActivity extends AppCompatActivity {
                     if (s2.equals("1")){
                         value=0;
                         radio = 0;
+                        tvBugget1.setText(value+"");
+                        tvBudget.setText(String.format("%.2f",value-expenditureValue));
                         mPieChart.setLabelText("剩余"+radio+"%");
                         mPieChart.setShowTick(false);
                         mPieChart.setMax(100);
@@ -312,6 +314,7 @@ public class BudgetActivity extends AppCompatActivity {
         takePhotoPopWin = new TakeBudgetPopWin(this, onClickListener);
         //showAtLocation(View parent, int gravity, int x, int y)
         takePhotoPopWin.showAtLocation(findViewById(R.id.main_view), Gravity.CENTER, 0, 0);
+
     }
 
     private View.OnClickListener onClickListener = new View.OnClickListener() {
@@ -329,6 +332,7 @@ public class BudgetActivity extends AppCompatActivity {
                     DeleteBudget();
                     Intent intent = new Intent(BudgetActivity.this, MainActivity.class);
                     setResult(1,intent);
+                    takePhotoPopWin.dismiss();
                     finish();
                     break;
             }
@@ -406,6 +410,7 @@ public class BudgetActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String str = response.body().string();
+                Log.e("budget",str);
                 Message msg = handler.obtainMessage();
                 msg.what = 4;
                 msg.obj = str;

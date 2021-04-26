@@ -1,7 +1,19 @@
 package com.xxx.schoolBillServer.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "budget")
 public class Budget {
+	@Id
+	@Column(name = "user_id")
 	private int id;//用户id
+	@Column(name = "budget")
 	private double budget;//用户预算
 	public Budget() {
 		super();
