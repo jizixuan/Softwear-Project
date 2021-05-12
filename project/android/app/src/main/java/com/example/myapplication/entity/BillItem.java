@@ -15,13 +15,13 @@ public class BillItem implements Serializable {
     public BillItem() {
     }
 
-    public BillItem(Bitmap img, String type, double num, String numType, String note) {
-        this.img = img;
-        this.type = type;
-        this.num = num;
-        this.numType = numType;
-        this.note = note;
-    }
+//    public BillItem(Bitmap img, String type, double num, String numType, String note) {
+//        this.img = img;
+//        this.type = type;
+//        this.num = num;
+//        this.numType = numType;
+//        this.note = note;
+//    }
 
     public String getNote() {
         return note;

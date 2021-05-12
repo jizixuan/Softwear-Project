@@ -282,7 +282,7 @@ public class BillItemDaoImpl {
 		long count=(Long)session.createQuery("select count(*) from BillItem b where b.month='"+month+"' and b.userId='"+id+"'")
                 .uniqueResult();
 		int num=Integer.parseInt(String.valueOf(count));;
-		System.out.println(id+"");
+		System.out.println(count+"");
 		session.close();
 		return num;
 	}

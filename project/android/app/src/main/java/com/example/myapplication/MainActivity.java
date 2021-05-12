@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ScrollView;
@@ -92,7 +93,7 @@ public class MainActivity extends Fragment {
     private TextView bill;
     private TextView wallet;
     private Double value;//预算
-
+    private ImageView empty;
     List<DateBill> dateBills;
     private OkHttpClient okHttpClient=new OkHttpClient();
     private Handler handler=new Handler() {
@@ -174,7 +175,8 @@ public class MainActivity extends Fragment {
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
-
+                    empty.setVisibility(View.GONE);
+                    list.setEmptyView(empty);
                     dateAdapter=new DateAdapter(dateBills,root.getContext(), R.layout.date_bill);
                     list.setAdapter(dateAdapter);
                     ConfigUtil.setListViewHeightBasedOnChildren(list);
@@ -376,6 +378,7 @@ public class MainActivity extends Fragment {
         refreshLayout=root.findViewById(R.id.srl);
         note = root.findViewById(R.id.note);
         financing = root.findViewById(R.id.financing);
+        empty=root.findViewById(R.id.empty);
     }
     class MyListener implements View.OnClickListener{
         @Override
