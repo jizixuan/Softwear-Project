@@ -19,6 +19,8 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
 
                 <ImageView
                     android:id="@+id/personalImg"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginTop="20dp"
                     android:layout_width="150dp"
                     android:layout_height="150dp"
                     android:src="@drawable/logo"/>
@@ -28,7 +30,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="龙瑞"
-                    android:textSize="25sp"
+                    android:textSize="40sp"
                     android:layout_toRightOf="@+id/personalImg"
                     android:layout_marginTop="60dp"
                     android:textColor="#000000"/>
@@ -62,7 +64,6 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                 android:layout_marginTop="-15dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginLeft="15dp"
-                android:layout_marginBottom="15dp"
                 android:background="#ffffff"
                 android:id="@+id/personalVip">
 
@@ -100,7 +101,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="账单"
-                    android:textSize="14sp" />
+                    android:textSize="20sp" />
 
                 <ImageView
                     android:layout_width="20dp"
@@ -143,11 +144,11 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="46dp"
-                    android:layout_marginBottom="14dp"
+                    android:layout_marginBottom="20dp"
                     android:layout_toRightOf="@+id/tv_personalMonth1"
                     android:text="600"
                     android:textColor="#000000"
-                    android:textSize="12sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tv_personalOutcome"
@@ -155,11 +156,11 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="126dp"
-                    android:layout_marginBottom="15dp"
+                    android:layout_marginBottom="20dp"
                     android:layout_toRightOf="@+id/tv_personalMonth1"
                     android:text="600"
                     android:textColor="#000000"
-                    android:textSize="12sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:id="@+id/tv_personalBalance"
@@ -167,41 +168,41 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
                     android:layout_marginLeft="225dp"
-                    android:layout_marginBottom="14dp"
+                    android:layout_marginBottom="20dp"
                     android:layout_toRightOf="@+id/tv_personalMonth1"
                     android:text="600"
                     android:textColor="#000000"
-                    android:textSize="12sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="46dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="5dp"
                     android:layout_toRightOf="@+id/tv_personalMonth1"
                     android:text="收入"
-                    android:textSize="10sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="125dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="5dp"
                     android:layout_toRightOf="@+id/tv_personalMonth1"
                     android:text="支出"
-                    android:textSize="10sp" />
+                    android:textSize="18sp" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentTop="true"
                     android:layout_marginLeft="221dp"
-                    android:layout_marginTop="20dp"
+                    android:layout_marginTop="5dp"
                     android:layout_toRightOf="@+id/tv_personalMonth1"
                     android:text="结余"
-                    android:textSize="10sp" />
+                    android:textSize="18sp" />
 
             </RelativeLayout>
             <RelativeLayout
@@ -213,6 +214,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                 <com.king.view.circleprogressview.CircleProgressView
                     android:id="@+id/Circle"
                     android:layout_marginTop="5dp"
+                    android:layout_marginLeft="30dp"
                     android:layout_width="100dp"
                     android:layout_height="80dp"
                     app:cpvShowTick="false"
@@ -322,7 +324,7 @@ xmlns:app="http://schemas.android.com/apk/res-auto">
                 android:layout_height="wrap_content"
                 android:background="#ffffff"
                 android:text="退出登录"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginLeft="15dp"
                 android:layout_marginRight="15dp"
                 android:layout_marginBottom="90dp"

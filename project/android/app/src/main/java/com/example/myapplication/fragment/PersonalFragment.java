@@ -99,7 +99,8 @@ public class PersonalFragment extends Fragment {
                     for (DateBill dateBill : dateBillList){
                         SimpleDateFormat format = new SimpleDateFormat("MM");
                         String s = format.format(dateBill.getDate());
-                        if(s.equals(month+"")){
+                        if(s.equals("0"+month+"")){
+
                             tvMonth1.setText(month+"");
                             tvMonth.setText(month+"月总预算");
                             tvIncome.setText(dateBill.getIncome()+"");

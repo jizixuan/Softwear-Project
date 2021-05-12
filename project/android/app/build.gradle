@@ -37,6 +37,7 @@ MobSDK {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
     implementation 'com.zhihu.android:matisse:0.5.3-beta3'
 
     implementation 'org.greenrobot:eventbus:3.1.1'
