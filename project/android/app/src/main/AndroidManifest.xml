@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.myapplication">
-
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission
@@ -29,7 +30,10 @@
         <activity android:name=".IconItemActivity" />
         <activity android:name=".AddBillActivity" />
         <activity android:name=".InOrOutDetailActivity" />
-        <activity android:name=".FragmentTabHost" />
+        <activity android:name=".FragmentTabHost"
+
+            android:windowSoftInputMode="stateHidden|adjustResize"
+            android:configChanges="orientation|keyboardHidden|screenSize"/>
         <activity android:name=".note.activity.NoteItemActivity"/>
         <activity android:name=".FinacingActivity"/>
         <activity android:name=".BillDetailsActivity" />
@@ -65,6 +69,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <meta-data
+            android:name="com.google.android.gms.ads.AD_MANAGER_APP"
+            android:value="true" /><!--自带控件所需的权限-->
     </application>
 
 </manifest>

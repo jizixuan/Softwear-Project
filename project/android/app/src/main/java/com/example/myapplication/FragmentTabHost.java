@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.util.Log;
 
 import com.example.myapplication.fragment.PersonalFragment;
+import com.example.myapplication.robot.RobotActivity;
 import com.luseen.spacenavigation.SpaceItem;
 import com.luseen.spacenavigation.SpaceNavigationView;
 import com.luseen.spacenavigation.SpaceOnClickListener;
@@ -21,6 +22,7 @@ public class FragmentTabHost extends AppCompatActivity {
     private Fragment currentFragment = new Fragment();
     private MainActivity mainActivity;
     private IconActivity iconActivity;
+    private RobotActivity robotActivity;
     private PersonalFragment personalFragment;
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,7 +37,7 @@ public class FragmentTabHost extends AppCompatActivity {
         spaceNavigationView.initWithSaveInstanceState(savedInstanceState);
         spaceNavigationView.addSpaceItem(new SpaceItem("明细", R.drawable.account));
         spaceNavigationView.addSpaceItem(new SpaceItem("图表", R.drawable.chart));
-        spaceNavigationView.addSpaceItem(new SpaceItem("社区", R.drawable.compass));
+        spaceNavigationView.addSpaceItem(new SpaceItem("智能", R.drawable.compass));
         spaceNavigationView.addSpaceItem(new SpaceItem("我的", R.drawable.personal));
         spaceNavigationView.shouldShowFullBadgeText(false);
         spaceNavigationView.setCentreButtonIcon(R.drawable.add2);
@@ -97,6 +99,17 @@ public class FragmentTabHost extends AppCompatActivity {
                 }
                 currentFragment=iconActivity;
                 break;
+            case 2:
+                //显示对应Fragment
+                if(robotActivity == null){
+                    robotActivity = new RobotActivity();
+                    mTransaction.add(R.id.frame_layout, robotActivity,
+                            "robot");
+                }else {
+                    mTransaction.show(robotActivity);
+                }
+                currentFragment=robotActivity;
+                break;
             case 3:
                 //显示对应Fragment
                 if(personalFragment == null){
@@ -119,6 +132,9 @@ public class FragmentTabHost extends AppCompatActivity {
         }
         if(iconActivity != null){
             transaction.hide(iconActivity);
+        }
+        if(robotActivity != null){
+            transaction.hide(robotActivity);
         }
         if(personalFragment != null){
             transaction.hide(personalFragment);
