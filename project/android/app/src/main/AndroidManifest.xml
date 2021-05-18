@@ -69,6 +69,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".calendar.Main1Activity"/>
+        <activity android:name=".calendar.CalendarActivity" />
+        <activity android:name=".calendar.pager.ViewPagerActivity" />
+        <activity android:name=".calendar.base.activity.BaseActivity" />
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
             android:value="true" /><!--自带控件所需的权限-->

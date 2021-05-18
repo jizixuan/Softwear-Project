@@ -33,6 +33,7 @@ import com.bigkoo.pickerview.listener.OnTimeSelectChangeListener;
 import com.bigkoo.pickerview.listener.OnTimeSelectListener;
 import com.bigkoo.pickerview.view.TimePickerView;
 import com.example.myapplication.adapter.DateAdapter;
+import com.example.myapplication.calendar.Main1Activity;
 import com.example.myapplication.entity.BillItem;
 import com.example.myapplication.entity.BillItemMessage;
 import com.example.myapplication.entity.BillType;
@@ -412,8 +413,8 @@ public class MainActivity extends Fragment {
                     break;
                 case R.id.financing:
                     Intent intent3 = new Intent();
-                    intent3.setClass(root.getContext(), FinacingActivity.class);
-                    startActivity(intent3, ActivityOptions.makeSceneTransitionAnimation((Activity) root.getContext()).toBundle());
+                    intent3.setClass(root.getContext(), Main1Activity.class);
+                    startActivity(intent3);
                     break;
                 case R.id.note:
                     Intent intent2 = new Intent();
