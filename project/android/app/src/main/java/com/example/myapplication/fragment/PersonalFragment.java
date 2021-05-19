@@ -25,6 +25,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import com.blankj.utilcode.util.ImageUtils;
+import com.example.myapplication.AboutActivity;
 import com.example.myapplication.BillActivity;
 import com.example.myapplication.BudgetActivity;
 import com.example.myapplication.ChangeInfoActvity;
@@ -81,6 +82,7 @@ public class PersonalFragment extends Fragment {
     private Button btnSettings;
     private Button btnChange;
     private Button btnExit;
+    private Button btn_about;
     private CircleProgressView mPieChart;
     private int radio;
     private List<DateBill> dateBillList;
@@ -254,6 +256,7 @@ public class PersonalFragment extends Fragment {
         btnChange.setOnClickListener(myListener);
         relativeBill.setOnClickListener(myListener);
         btnExit.setOnClickListener(myListener);
+        btn_about.setOnClickListener(myListener);
     }
 
 
@@ -275,7 +278,7 @@ public class PersonalFragment extends Fragment {
         tvBudget = view.findViewById(R.id.tv_personalBudget);
         tvBudget1 = view.findViewById(R.id.tv_personalBudget1);
         tvOut = view.findViewById(R.id.tv_personalOut);
-
+        btn_about=view.findViewById(R.id.btn_about);
         btnChange = view.findViewById(R.id.btn_personalChange);
         btnExit = view.findViewById(R.id.btn_personalExit);
         btnSettings = view.findViewById(R.id.btn_personalSettings);
@@ -351,6 +354,11 @@ public class PersonalFragment extends Fragment {
 
                 case R.id.btn_personalExit:
                     deleteData();
+                    break;
+                case R.id.btn_about:
+                    Intent intent_a=new Intent();
+                    intent_a.setClass(view.getContext(), AboutActivity.class);
+                    startActivity(intent_a);
                     break;
             }
         }

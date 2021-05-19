@@ -2,9 +2,10 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.myapplication">
-    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission
@@ -12,16 +13,17 @@
         tools:ignore="ProtectedPermissions" />
 
     <application
-        android:usesCleartextTraffic="true"
-        android:requestLegacyExternalStorage="true"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="校园账单"
+        android:requestLegacyExternalStorage="true"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
+        android:usesCleartextTraffic="true"
         tools:replace="android:label">
-        <activity android:name=".ChangePhoneActivity"></activity>
+        <activity android:name=".AboutActivity"></activity>
+        <activity android:name=".ChangePhoneActivity" />
         <activity android:name=".view.NewPwdActivity" />
         <activity android:name=".view.ForgetPwdActivity" />
         <activity android:name=".note.activity.SimpleTextActivity" />
@@ -30,12 +32,12 @@
         <activity android:name=".IconItemActivity" />
         <activity android:name=".AddBillActivity" />
         <activity android:name=".InOrOutDetailActivity" />
-        <activity android:name=".FragmentTabHost"
-
-            android:windowSoftInputMode="stateHidden|adjustResize"
-            android:configChanges="orientation|keyboardHidden|screenSize"/>
-        <activity android:name=".note.activity.NoteItemActivity"/>
-        <activity android:name=".FinacingActivity"/>
+        <activity
+            android:name=".FragmentTabHost"
+            android:configChanges="orientation|keyboardHidden|screenSize"
+            android:windowSoftInputMode="stateHidden|adjustResize" />
+        <activity android:name=".note.activity.NoteItemActivity" />
+        <activity android:name=".FinacingActivity" />
         <activity android:name=".BillDetailsActivity" />
         <activity android:name=".IncomeDetailsActivity" />
 
@@ -69,13 +71,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".calendar.Main1Activity"/>
+        <activity android:name=".calendar.Main1Activity" />
         <activity android:name=".calendar.CalendarActivity" />
         <activity android:name=".calendar.pager.ViewPagerActivity" />
         <activity android:name=".calendar.base.activity.BaseActivity" />
+
         <meta-data
             android:name="com.google.android.gms.ads.AD_MANAGER_APP"
-            android:value="true" /><!--自带控件所需的权限-->
+            android:value="true" />
     </application>
 
 </manifest>
