@@ -286,4 +286,30 @@ public class BillItemDaoImpl {
 		session.close();
 		return num;
 	}
+	/*根据日期获得数据
+	 * */
+	public List<BillItem> getBillItemListOrderByDay(int year,int month,int day,int userId){
+		String hql = "from BillItem i where i.year=:year and month=:month and day=:day and userId=:userId order by num desc";
+		Session session = sessionFactory.openSession();
+		Query query = session.createQuery(hql);
+		query.setParameter("year", year);
+		query.setParameter("month", month);
+		query.setParameter("day", day);
+		query.setParameter("userId", userId);
+		billItems = query.list();
+		session.close();
+		return billItems;
+	}
+	public List<Integer> getBillItemMark(int year,int month,int userId){
+		String hql = "select distinct i.day FROM BillItem i where i.year=:year and month=:month and userId=:userId";
+		
+		Session session = sessionFactory.openSession();
+		Query query = session.createQuery(hql);
+		query.setParameter("year", year);
+		query.setParameter("month", month);
+		query.setParameter("userId", userId);
+		List<Integer> list= query.list();
+		session.close();
+		return list;
+	}
 }

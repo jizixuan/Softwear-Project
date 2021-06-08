@@ -175,20 +175,24 @@
         <androidx.core.widget.NestedScrollView
             android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.example.myapplication.calendar.group.GroupRecyclerView
-                android:id="@+id/recyclerView"
+            android:layout_height="match_parent">
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/content_background"
-                app:group_background="@color/content_background"
+                android:orientation="vertical">
+                <com.example.myapplication.calendar.group.GroupRecyclerView
+                android:id="@+id/recyclerView"
+                android:layout_width="match_parent"
+                android:layout_height="350dp"
+                android:background="@color/white"
+                app:group_background="@color/white"
                 app:group_center="false"
                 app:group_has_header="false"
-                app:group_height="42dp"
                 app:group_padding_left="16dp"
                 app:group_padding_right="16dp"
-                app:group_text_color="#555555"
-                app:group_text_size="14sp" />
+                app:group_text_color="#00000000"
+                app:group_text_size="14sp" /></LinearLayout>
+
         </androidx.core.widget.NestedScrollView>
     </com.haibin.calendarview.CalendarLayout>
 

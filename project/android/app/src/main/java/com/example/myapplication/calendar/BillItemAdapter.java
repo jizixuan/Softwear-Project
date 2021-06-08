@@ -2,6 +2,7 @@ package com.example.myapplication.calendar;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -22,13 +23,24 @@ import java.util.List;
 
 public class BillItemAdapter extends GroupRecyclerAdapter<String, BillItem> {
     private RequestManager mLoader;
-    public BillItemAdapter(Context context) {
+    public BillItemAdapter(Context context,List<com.example.myapplication.entity.BillItem> billItems) {
         super(context);
         mLoader = Glide.with(context.getApplicationContext());
         LinkedHashMap<String, List<BillItem>> map = new LinkedHashMap<>();
         List<String> titles = new ArrayList<>();
-        map.put("今日情况",create());
-        titles.add("今日情况");
+        List<BillItem> billItems1  = new ArrayList<>();
+        for (com.example.myapplication.entity.BillItem billItem : billItems){
+            BillItem billItem1 = new BillItem();
+            billItem1.setId(billItem.getId());
+            billItem1.setImg(billItem.getImg());
+            billItem1.setType(billItem.getType());
+            billItem1.setNote(billItem.getNote());
+            billItem1.setNum(billItem.getNum());
+            billItem1.setNumType(billItem.getNumType());
+            billItems1.add(billItem1);
+        }
+        map.put("今日情况",billItems1);
+        Log.i("lr", "BillItemAdapter: listview");
         resetGroups(map,titles);
     }
 
@@ -41,6 +53,7 @@ public class BillItemAdapter extends GroupRecyclerAdapter<String, BillItem> {
     protected void onBindViewHolder(RecyclerView.ViewHolder holder, BillItem item, int position) {
         BillItemViewHolder h = (BillItemViewHolder) holder;
         h.mTextType.setText(item.getType());
+        Log.i("type", "onBindViewHolder: "+item.getType());
         if (item.getNumType().equals("+")){
             h.mTextNum.setText("+"+item.getNum());
         }else{
@@ -61,18 +74,5 @@ public class BillItemAdapter extends GroupRecyclerAdapter<String, BillItem> {
             mTextNum = itemView.findViewById(R.id.lv_num);
             mImageView = itemView.findViewById(R.id.lv_img);
         }
-    }
-    private static List<BillItem> create() {
-        Bitmap bitmap = ImageUtils.getBitmap(R.drawable.bg_material);
-        List<BillItem> list = new ArrayList<>();
-        BillItem bill1 = new BillItem(bitmap,"食品",2,"1","吃饭");
-        BillItem bill2 = new BillItem(bitmap,"食品",2,"1","吃饭");
-        BillItem bill3 = new BillItem(bitmap,"食品",2,"1","吃饭");
-        list.add(bill1);
-        list.add(bill2);
-        list.add(bill3);
-
-        //将接受到数据直接返回
-        return list;
     }
 }

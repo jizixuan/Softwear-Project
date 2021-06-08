@@ -2,6 +2,8 @@ package com.example.myapplication.calendar;
 
 import android.annotation.SuppressLint;
 import android.content.DialogInterface;
+import android.graphics.Color;
+import android.graphics.Rect;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
@@ -15,19 +17,34 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.baidu.ocr.ui.util.ImageUtil;
+import com.blankj.utilcode.util.ImageUtils;
 import com.example.myapplication.R;
+import com.example.myapplication.adapter.DateAdapter;
 import com.example.myapplication.calendar.base.activity.BaseActivity;
 import com.example.myapplication.calendar.group.GroupItemDecoration;
 import com.example.myapplication.calendar.group.GroupRecyclerView;
+import com.example.myapplication.entity.BillType;
+import com.example.myapplication.entity.DateBill;
+import com.example.myapplication.util.ConfigUtil;
+import com.example.myapplication.util.ServerConfig;
 import com.haibin.calendarview.Calendar;
 import com.haibin.calendarview.CalendarLayout;
 import com.haibin.calendarview.CalendarView;
 import com.haibin.calendarview.TrunkBranchAnnals;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -38,7 +55,6 @@ import okhttp3.Response;
 
 public class Main1Activity extends BaseActivity implements
         CalendarView.OnCalendarSelectListener,
-        CalendarView.OnCalendarLongClickListener,
         CalendarView.OnMonthChangeListener,
         CalendarView.OnYearChangeListener,
         CalendarView.OnWeekChangeListener,
@@ -62,25 +78,153 @@ public class Main1Activity extends BaseActivity implements
     private AlertDialog mFuncDialog;
     private int mYear;
     CalendarLayout mCalendarLayout;
+    private List<DateBill> dateBills;
     private Handler handler = new Handler(){
+        @SuppressLint("HandlerLeak")
         @Override
         public void handleMessage(@NonNull Message msg) {
             switch (msg.what){
-                case '1':
+                case 1:
+                    Log.i("lr", "handleMessage: aaaaa");
+                    String str= (String) msg.obj;
+                    Log.i("lr", "handleMessage: "+str);
+                    if (str.equals("[]")) {
+                        Log.i("null", "handleMessage: 空值");
+                        mRecyclerView = findViewById(R.id.recyclerView);
+                        com.example.myapplication.entity.BillItem billItem=new com.example.myapplication.entity.BillItem();
+                        billItem.setType("今日无记账");
+                        billItem.setNum(0);
+                        billItem.setNumType("+");
+                        billItem.setImg(ImageUtils.getBitmap(R.drawable.empty_data));
+                        dateBills=new ArrayList<>();
+
+                        List<com.example.myapplication.entity.BillItem>billItems = new ArrayList<>();
+                        DateBill dateBill=new DateBill();
+                        billItems.add(billItem);
+                        dateBill.setBills(billItems);
+                        dateBills.add(dateBill);
+                        mRecyclerView.setLayoutManager(new LinearLayoutManager(Main1Activity.this));
+                        //mRecyclerView.addItemDecoration(new GroupItemDecoration<String, Article>());
+                        mRecyclerView.addItemDecoration(new GroupItemDecoration<String, BillItem>());
+                        BillItemAdapter adapter=new BillItemAdapter(Main1Activity.this,dateBills.get(0).getBills());
+                        mRecyclerView.setAdapter(adapter);
+                        break;
+                    }
+                    com.example.myapplication.entity.DateBill dateBill=new com.example.myapplication.entity.DateBill();;
+                    Double dateIncomeValue=0.0;
+                    Double dateExpenditureValue=0.0;
+                    dateBills=new ArrayList<>();
+                    List<com.example.myapplication.entity.BillItem> billItems =new ArrayList<>();
+                    try {
+                        JSONArray jsonArray=new JSONArray(str);
+                        if(jsonArray.length()>0) {
+                            JSONObject jsonObject0 = (JSONObject) jsonArray.get(0);
+                            int day = jsonObject0.getInt("day");
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                                int dayValue = jsonObject.getInt("day");
+                                if (day != dayValue) {
+                                    JSONObject jsonObject1 = (JSONObject) jsonArray.get(i - 1);
+                                    Date date = stringToDate(jsonObject1.getString("date"), "yyyy-MM-dd");
+                                    dateBill.setDate(date);
+                                    dateBill.setExpenditure(dateExpenditureValue);
+                                    dateBill.setIncome(dateIncomeValue);
+                                    dateBill.setBills(billItems);
+                                    dateBills.add(dateBill);
+
+                                    day = dayValue;
+                                    dateBill = new com.example.myapplication.entity.DateBill();
+                                    dateIncomeValue = 0.0;
+                                    dateExpenditureValue = 0.0;
+                                    billItems = new ArrayList<>();
+
+                                }
+                                com.example.myapplication.entity.BillItem billItem = new com.example.myapplication.entity.BillItem();
+                                billItem.setNum(jsonObject.getDouble("num"));
+                                int id = jsonObject.getInt("typeId");
+                                Log.i("type", "handleMessage: "+id);
+                                BillType billType = com.example.myapplication.util.ServerConfig.BILL_TYPES.get(id - 1);
+                                billItem.setType(billType.getName());
+                                Log.i("type", "handleMessage: "+billType.getName());
+                                billItem.setId(jsonObject.getInt("id"));
+                                billItem.setNote(jsonObject.getString("note"));
+                                billItem.setNumType(billType.getNumType());
+                                if (billItem.getNumType().equals("+")) {
+                                    dateIncomeValue += billItem.getNum();
+                                } else {
+                                    dateExpenditureValue += billItem.getNum();
+                                }
+                                billItem.setImg(billType.getImg());
+                                billItems.add(billItem);
+                                if (i == jsonArray.length() - 1) {
+                                    if (day != dayValue) {
+                                        com.example.myapplication.entity.DateBill dateBill1 = null;
+                                        dateBill1 = new com.example.myapplication.entity.DateBill();
+                                        List<com.example.myapplication.entity.BillItem> billItems1 = new ArrayList<>();
+                                        billItems1.add(billItem);
+                                        dateBill1.setBills(billItems1);
+                                        Date date = stringToDate(jsonObject.getString("date"), "yyyy-MM-dd");
+                                        dateBill1.setDate(date);
+                                        dateBill1.setExpenditure(dateExpenditureValue);
+                                        dateBill1.setIncome(dateIncomeValue);
+                                        dateBills.add(dateBill1);
+                                    } else {
+                                        dateBill.setExpenditure(dateExpenditureValue);
+                                        dateBill.setIncome(dateIncomeValue);
+                                        dateBill.setBills(billItems);
+                                        Date date = stringToDate(jsonObject.getString("date"), "yyyy-MM-dd");
+                                        dateBill.setDate(date);
+                                        dateBills.add(dateBill);
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                    mRecyclerView = findViewById(R.id.recyclerView);
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager(Main1Activity.this));
+                    //mRecyclerView.addItemDecoration(new GroupItemDecoration<String, Article>());
+                    mRecyclerView.addItemDecoration(new GroupItemDecoration<String, BillItem>());
+                    mRecyclerView.setAdapter(new BillItemAdapter(Main1Activity.this,dateBills.get(0).getBills()));
+                    mRecyclerView.notifyDataSetChanged();
+
                     break;
-                case '2':
+
+
+                case 2:
                     //将数据库传来日期信息，解析，保存到map中
                     Map<String, Calendar> map = new HashMap<>();
-                    for(int i = 0;i<20;++i){
-                        int year = 2021;//传来的数据年份
-                        int month = 1;//传来的数据月份
-                        int day = 2;//传来的数据日子
+                    String str1 = (String) msg.obj;
 
-                        map.put(getSchemeCalendar(year, month, day, 0xFF40db25, "记账").toString(),
-                                getSchemeCalendar(year, month, day, 0xFF40db25, "记账"));
+                    try {
+                        Log.i("date", "1");
+                        JSONArray jsonArray=new JSONArray(str1);
+                        if(jsonArray.length()>0) {
+                            for (int i = 0; i < jsonArray.length(); i++) {
+                                JSONObject jsonObject = (JSONObject) jsonArray.get(i);
+                                int day = (int) jsonObject.get("day");
+                                int month = (int) jsonObject.get("month");
+                                int year = (int) jsonObject.get("year");
+                                map.put(getSchemeCalendar(year, month, day, 0xFF40db25, "记账").toString(),
+                                        getSchemeCalendar(year, month, day, 0xFF40db25, "记账"));
+                                Log.i("date", "handleMessage: 日期数值"+year+"年"+month+"月"+day+"日");
+                            }
+                        }
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                     //28560 数据量增长不会影响UI响应速度，请使用这个API替换
+                    mRecyclerView = findViewById(R.id.recyclerView);
+                    mRecyclerView.setLayoutManager(new LinearLayoutManager(Main1Activity.this));
+                    //mRecyclerView.addItemDecoration(new GroupItemDecoration<String, Article>());
+                    mRecyclerView.addItemDecoration(new GroupItemDecoration<String, BillItem>());
                     mCalendarView.setSchemeDate(map);
+                    mRecyclerView.notifyDataSetChanged();
+                    Log.i("date", "handleMessage: 日期显示");
+
                     break;
             }
         }
@@ -172,7 +316,7 @@ public class Main1Activity extends BaseActivity implements
         mCalendarView.setOnYearChangeListener(this);
         mCalendarView.setOnCalendarSelectListener(this);
         mCalendarView.setOnMonthChangeListener(this);
-        mCalendarView.setOnCalendarLongClickListener(this, true);
+
         mCalendarView.setOnWeekChangeListener(this);
         mCalendarView.setOnYearViewChangeListener(this);
 
@@ -204,7 +348,11 @@ public class Main1Activity extends BaseActivity implements
         //mRecyclerView.addItemDecoration(new GroupItemDecoration<String, Article>());
         mRecyclerView.addItemDecoration(new GroupItemDecoration<String, BillItem>());
         //mRecyclerView.setAdapter(new ArticleAdapter(this));
-        mRecyclerView.setAdapter(new BillItemAdapter(this));
+//        if (dateBills.get(0).getBills() == null){
+//            List<BillItem> billItems = new ArrayList<>();
+//            mRecyclerView.setAdapter(new BillItemAdapter(this);
+//        }
+        mRecyclerView.setAdapter(new BillItemAdapter(this,dateBills.get(0).getBills()));
         mRecyclerView.notifyDataSetChanged();
     }
 
@@ -244,7 +392,6 @@ public class Main1Activity extends BaseActivity implements
         mTextLunar.setText(calendar.getLunar());
         mYear = calendar.getYear();
         if (isClick) {//点击日期，跳到当前日期
-            Toast.makeText(this, getCalendarText(calendar), Toast.LENGTH_SHORT).show();
         }
 //        Log.e("lunar "," --  " + calendar.getLunarCalendar().toString() + "\n" +
 //        "  --  " + calendar.getLunarCalendar().getYear());
@@ -257,34 +404,19 @@ public class Main1Activity extends BaseActivity implements
         Log.e("干支年纪 ： ", " -- " + TrunkBranchAnnals.getTrunkBranchYear(calendar.getLunarCalendar().getYear()));
         int year1 = calendar.getYear();
         int month1 = calendar.getMonth();
+        getBills(calendar);
+
         Log.i("lr", "onMonthChange:选择日期 "+year1+"年"+month1+"月");
-        //getDays(year1,month1);
+        getDays(year1,month1);
     }
 
-    @Override
-    public void onCalendarLongClickOutOfRange(Calendar calendar) {
-        Toast.makeText(this, String.format("%s : LongClickOutOfRange", calendar), Toast.LENGTH_SHORT).show();
-    }
 
-    @Override
-    public void onCalendarLongClick(Calendar calendar) {
-        Toast.makeText(this, "长按不选择日期\n" + getCalendarText(calendar), Toast.LENGTH_SHORT).show();
-    }
 
-    private static String getCalendarText(Calendar calendar) {
-        return String.format("新历%s \n 农历%s \n 公历节日：%s \n 农历节日：%s \n 节气：%s \n 是否闰月：%s",
-                calendar.getMonth() + "月" + calendar.getDay() + "日",
-                calendar.getLunarCalendar().getMonth() + "月" + calendar.getLunarCalendar().getDay() + "日",
-                TextUtils.isEmpty(calendar.getGregorianFestival()) ? "无" : calendar.getGregorianFestival(),
-                TextUtils.isEmpty(calendar.getTraditionFestival()) ? "无" : calendar.getTraditionFestival(),
-                TextUtils.isEmpty(calendar.getSolarTerm()) ? "无" : calendar.getSolarTerm(),
-                calendar.getLeapMonth() == 0 ? "否" : String.format("闰%s月", calendar.getLeapMonth()));
-    }
 
     @SuppressLint("SetTextI18n")
     @Override
     public void onMonthChange(int year, int month) {
-            Log.e("onMonthChange", "  -- " + year + "  --  " + month);
+            Log.e("onMonthChange", "  -- " + year + "  --  " + month+111111111);
             Calendar calendar = mCalendarView.getSelectedCalendar();
             mTextLunar.setVisibility(View.VISIBLE);
             mTextYear.setVisibility(View.VISIBLE);
@@ -294,8 +426,9 @@ public class Main1Activity extends BaseActivity implements
             mYear = calendar.getYear();
             int year1 = calendar.getYear();
             int month1 = calendar.getMonth()+1;
-            Log.i("lr", "onMonthChange:改变月份代码 "+year1+"年"+month1+"月");
+
             getDays(year1,month1);
+        Log.i("lr", "onMonthChange:改变月份代码 "+year1+"年"+month1+"月");
     }
 
     @Override
@@ -347,20 +480,22 @@ public class Main1Activity extends BaseActivity implements
     public void getDays(int year,int month){
 
         OkHttpClient client = new OkHttpClient();
-        FormBody.Builder formBody = new FormBody.Builder();
-        formBody.add("year",year+"");
-        formBody.add("month",month+"");
-        //formBody.add("userId", ServerConfig.USER_ID+"");
-        formBody.add("userId", 1+"");
+        FormBody formBody =
+                new FormBody.Builder()
+                        .add("year",year+"")
+                        .add("month",month+"")
+                        .add("userId", com.example.myapplication.util.ServerConfig.USER_ID+"")
+                        .build();
         Request request = new Request.Builder()
-                .post(formBody.build())
-                .url(ServerConfig.SERVER_HOME+"GetBillItemListByDateServlet")
+                .url(com.example.myapplication.util.ServerConfig.SERVER_HOME +"GetBillItemListMark")
+                .method("POST", formBody)
+                .post(formBody)
                 .build();
         Call call = client.newCall(request);
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.i("lr","返回信息失败");
+                Log.i("lr","month返回信息失败");
             }
 
             @Override
@@ -370,6 +505,7 @@ public class Main1Activity extends BaseActivity implements
                 msg.what = 2;
                 msg.obj = str;
                 handler.sendMessage(msg);
+                Log.i("lr", "日期返回信息成功");
             }
         });
 
@@ -380,21 +516,26 @@ public class Main1Activity extends BaseActivity implements
      * @param calendar
      */
     public void getBills(Calendar calendar){
+        Log.i("lr", "getBills: ddddd");
         int year = calendar.getYear();
-        int month = calendar.getMonth()+1;
+        int month = calendar.getMonth();
         int day = calendar.getDay();
         Log.i("lr",year+"年:"+month+"月"+day+"日");
         OkHttpClient client = new OkHttpClient();
-        FormBody.Builder formBody = new FormBody.Builder();
-        formBody.add("year",year+"");
-        formBody.add("month",month+"");
-        formBody.add("day",day+"");
-        //formBody.add("userId", ServerConfig.USER_ID+"");
-        formBody.add("userId", 1+"");
+        FormBody formBody =
+                new FormBody.Builder()
+                        .add("year",year+"")
+                        .add("month",month+"")
+                        .add("day",day+"")
+                        .add("userId", com.example.myapplication.util.ServerConfig.USER_ID+"")
+                        .build();
+        //创建请求对象
         Request request = new Request.Builder()
-                .post(formBody.build())
-                .url(ServerConfig.SERVER_HOME+"GetBillItemListByDateServlet")
+                .url(com.example.myapplication.util.ServerConfig.SERVER_HOME + "GetBillItemListByDateServlet1")
+                .method("POST", formBody)
+                .post(formBody)
                 .build();
+
         Call call = client.newCall(request);
         call.enqueue(new Callback() {
             @Override
@@ -408,10 +549,21 @@ public class Main1Activity extends BaseActivity implements
                 Message msg = handler.obtainMessage();
                 msg.what = 1;
                 msg.obj = str;
+
                 handler.sendMessage(msg);
+                Log.i("lr", "返回信息成功");
             }
         });
     }
+    public static Date stringToDate(String dateStr, String dateFormat) {
+        SimpleDateFormat formatter = new SimpleDateFormat(dateFormat);
+        try {
+            return formatter.parse(dateStr);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 
 
 }

@@ -2,13 +2,13 @@ package com.example.myapplication.calendar.group;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.graphics.Rect;
 import android.util.AttributeSet;
 
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.myapplication.R;
-import com.example.myapplication.calendar.ArticleAdapter;
 
 
 /**
@@ -17,7 +17,7 @@ import com.example.myapplication.calendar.ArticleAdapter;
  */
 @SuppressWarnings("all")
 public class GroupRecyclerView extends RecyclerView {
-    private GroupItemDecoration mItemDecoration;
+    public GroupItemDecoration mItemDecoration;
     private int mGroupHeight;
     private int mGroutBackground, mTextColor;
     private int mTextSize;
@@ -35,10 +35,10 @@ public class GroupRecyclerView extends RecyclerView {
         super(context, attrs);
         TypedArray array = context.obtainStyledAttributes(attrs, R.styleable.GroupRecyclerView);
         mTextSize = array.getDimensionPixelSize(R.styleable.GroupRecyclerView_group_text_size, 16);
-        mGroupHeight = (int) array.getDimension(R.styleable.GroupRecyclerView_group_height, 52);
+        mGroupHeight = (int) array.getDimension(R.styleable.GroupRecyclerView_group_height, 10);
         mChildItemOffset = (int) array.getDimension(R.styleable.GroupRecyclerView_group_child_offset, 20);
         mTextColor = array.getColor(R.styleable.GroupRecyclerView_group_text_color, 0xFFFFFFFF);
-        mGroutBackground = array.getColor(R.styleable.GroupRecyclerView_group_background, 0x80000000);
+        mGroutBackground = array.getColor(R.styleable.GroupRecyclerView_group_background, 0xFFFFFF);
         isCenter = array.getBoolean(R.styleable.GroupRecyclerView_group_center, false);
         isHasHeader = array.getBoolean(R.styleable.GroupRecyclerView_group_has_header, true);
         mPaddingLeft = (int) array.getDimension(R.styleable.GroupRecyclerView_group_padding_left, 16);
@@ -73,7 +73,8 @@ public class GroupRecyclerView extends RecyclerView {
         mItemDecoration.setCenter(isCenter);
         mItemDecoration.setHasHeader(isHasHeader);
         mItemDecoration.setChildItemOffset(mChildItemOffset);
-        //mItemDecoration.notifyDataSetChanged((GroupRecyclerAdapter) getAdapter());
+
+        mItemDecoration.notifyDataSetChanged((GroupRecyclerAdapter) getAdapter());
     }
 
     public void notifyDataSetChanged() {

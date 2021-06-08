@@ -38,7 +38,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         initWindow();
         setContentView(getLayoutId());
         initView();
-        initData();
     }
 
     /**

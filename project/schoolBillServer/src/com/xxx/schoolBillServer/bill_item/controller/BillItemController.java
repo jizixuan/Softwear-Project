@@ -180,6 +180,51 @@ public class BillItemController {
 			return "失败";
 		}
 	}
+	@RequestMapping(value = "GetBillItemListByDateServlet1", method=RequestMethod.POST,produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String GetBillItemListByDateServlet1(@RequestParam("year") String yearV, @RequestParam("month") String monthV,@RequestParam("day") String dayV,@RequestParam("userId") String userIdV) {
+		int year=Integer.parseInt(yearV);
+		int month=Integer.parseInt(monthV);
+		int userId=Integer.parseInt(userIdV);
+		int day = Integer.parseInt(dayV);
+		List<BillItem> billItems=billItemServiceImpl.getBillItemListOrderByDay(year, month, day, userId);
+		System.out.println("longrui");
+		JSONArray jsonArray=new JSONArray();
+		for(BillItem billItem:billItems) {
+			JSONObject jsonObject=new JSONObject();
+			jsonObject.put("id", billItem.getId());
+			jsonObject.put("day", billItem.getDay());
+			jsonObject.put("month", billItem.getMonth());
+			jsonObject.put("day", billItem.getDay());
+			jsonObject.put("year", billItem.getYear());
+			jsonObject.put("num", billItem.getNum());
+			jsonObject.put("note", billItem.getNote());
+			jsonObject.put("date", billItem.getDate());
+			jsonObject.put("typeId", billItem.getTypeId());
+			jsonArray.put(jsonObject);
+		}
+		System.out.println(jsonArray.toString());
+		return jsonArray.toString();
+	}
+	@RequestMapping(value = "GetBillItemListMark", method=RequestMethod.POST,produces = "application/json; charset=utf-8")
+	@ResponseBody
+	public String GetBillItemListMark(@RequestParam("year") String yearV, @RequestParam("month") String monthV,@RequestParam("userId") String userIdV) {
+		int year=Integer.parseInt(yearV);
+		int month=Integer.parseInt(monthV);
+		int userId=Integer.parseInt(userIdV);
+		List<Integer> list = billItemServiceImpl.getBillItemMark(year, month, userId);
+		System.out.println("longrui123");
+		JSONArray jsonArray=new JSONArray();
+		for(int i : list) {
+			JSONObject jsonObject=new JSONObject();
+			jsonObject.put("day", i);
+			jsonObject.put("month",month);
+			jsonObject.put("year", year);
+			jsonArray.put(jsonObject);
+		}
+		System.out.println(jsonArray.toString());
+		return jsonArray.toString();
+	}
 	
 
 }

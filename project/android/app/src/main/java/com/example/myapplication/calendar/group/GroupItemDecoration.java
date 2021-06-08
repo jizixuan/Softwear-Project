@@ -5,6 +5,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -52,12 +53,13 @@ public class GroupItemDecoration<Group, Child> extends RecyclerView.ItemDecorati
      *
      * @param c      RecyclerView canvas
      * @param parent RecyclerView
-     * @param state  stare
+     * @param state  state
      */
     @Override
     public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDraw(c, parent, state);
         onDrawGroup(c, parent);
+        Log.i("zz", "onDraw: "+1343434);
     }
 
     /**
@@ -71,24 +73,12 @@ public class GroupItemDecoration<Group, Child> extends RecyclerView.ItemDecorati
         int right = parent.getWidth() - parent.getPaddingRight();
         int top, bottom;
         int count = parent.getChildCount();
-        for (int i = 0; i < parent.getChildCount(); i++) {
+        Log.i("zz", "onDrawGroup: "+1);
+        for (int i = 0; i < count; i++) {
             View child = parent.getChildAt(i);
             final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child.getLayoutParams();
             int key = params.getViewLayoutPosition();
-            if (mGroup.containsKey(key)) {
-                top = child.getTop() - params.topMargin - mGroupHeight;
-                bottom = top + mGroupHeight;
-                c.drawRect(paddingLeft, top, right, bottom, mBackgroundPaint);
-                String group = mGroup.get(params.getViewLayoutPosition()).toString();
-                float x;
-                float y = top + mTextBaseLine;
-                if (isCenter) {
-                    x = parent.getMeasuredWidth() / 2 - getTextX(group);
-                } else {
-                    x = mPaddingLeft;
-                }
-                c.drawText(group, x, y, mTextPaint);
-            }
+            Log.i("zz", "onDrawGroup: "+2);
         }
     }
 
@@ -112,6 +102,7 @@ public class GroupItemDecoration<Group, Child> extends RecyclerView.ItemDecorati
      * @param parent RecyclerView
      */
     protected void onDrawOverGroup(Canvas c, RecyclerView parent) {
+        Log.i("top", "onDrawGroup: 位置变化3");
         int firstVisiblePosition = ((LinearLayoutManager) parent.getLayoutManager()).findFirstVisibleItemPosition();
         if (firstVisiblePosition == RecyclerView.NO_POSITION) {
             return;
@@ -137,11 +128,14 @@ public class GroupItemDecoration<Group, Child> extends RecyclerView.ItemDecorati
         }
         int left = parent.getPaddingLeft();
         int right = parent.getWidth() - parent.getPaddingRight();
-        int top = parent.getPaddingTop();
-        int bottom = top + mGroupHeight;
+        int top = 0;
+        //int top = parent.getPaddingTop();
+        //int bottom = top + mGroupHeight;
+        int bottom = 0;
         c.drawRect(left, top, right, bottom, mBackgroundPaint);
         float x;
-        float y = top + mTextBaseLine;
+        //float y = top + mTextBaseLine;
+        float y = 11;
         if (isCenter) {
             x = parent.getMeasuredWidth() / 2 - getTextX(groupTitle);
         } else {
@@ -177,10 +171,13 @@ public class GroupItemDecoration<Group, Child> extends RecyclerView.ItemDecorati
      * @param adapterPosition position
      */
     protected void getItemOffsets(Rect outRect, View view, RecyclerView parent, int adapterPosition) {
+        Log.i("top", "onDrawGroup: 位置变化4");
         if (mGroup.containsKey(adapterPosition)) {
+            Log.i("top", "onDrawGroup: 位置变化41");
             outRect.set(0, mGroupHeight, 0, mGroup.containsKey(adapterPosition + 1) ? 0 : mChildItemOffset);
         } else {
-            outRect.set(0, 0, 0, mGroup.containsKey(adapterPosition + 1) ? 0 : mChildItemOffset);
+            Log.i("top", "onDrawGroup: 位置变化42");
+            outRect.set(0, 0, 0, 0);
         }
     }
 
@@ -191,6 +188,7 @@ public class GroupItemDecoration<Group, Child> extends RecyclerView.ItemDecorati
      * @return 当前ViewPosition所在的组
      */
     protected Group getCroup(int position) {
+        Log.i("top", "onDrawGroup: 位置变化5");
         while (position >= 0) {
             if (mGroup.containsKey(position)) {
                 return mGroup.get(position);
@@ -206,15 +204,18 @@ public class GroupItemDecoration<Group, Child> extends RecyclerView.ItemDecorati
      * @param adapter GroupRecyclerAdapter
      */
     public void notifyDataSetChanged(GroupRecyclerAdapter<Group, Child> adapter) {
+        Log.i("top", "onDrawGroup: 位置变化6");
         mGroup.clear();
         if (adapter == null) return;
         int key = 0;
         for (int i = 0; i < adapter.getGroupCount(); i++) {
             if (i == 0) {
+                Log.i("top", "onDrawGroup: 位置变化61");
                 mGroup.put(isHasHeader ? 1 : 0, adapter.getGroup(i));
                 key += adapter.getChildCount(i) + (isHasHeader ? 1 : 0);
                 ;
             } else {
+                Log.i("top", "onDrawGroup: 位置变化62");
                 mGroup.put(key, adapter.getGroup(i));
                 key += adapter.getChildCount(i);
             }
@@ -234,12 +235,14 @@ public class GroupItemDecoration<Group, Child> extends RecyclerView.ItemDecorati
     }
 
     public void setTextSize(float textSize) {
+        Log.i("top", "onDrawGroup: 位置变化7");
         mTextPaint.setTextSize(textSize);
         Paint.FontMetrics metrics = mTextPaint.getFontMetrics();
         mTextBaseLine = mGroupHeight / 2 - metrics.descent + (metrics.bottom - metrics.top) / 2;
     }
 
     public void setGroupHeight(int groupHeight) {
+        Log.i("top", "onDrawGroup: 位置变化8");
         mGroupHeight = groupHeight;
         Paint.FontMetrics metrics = mTextPaint.getFontMetrics();
         mTextBaseLine = mGroupHeight / 2 - metrics.descent + (metrics.bottom - metrics.top) / 2;

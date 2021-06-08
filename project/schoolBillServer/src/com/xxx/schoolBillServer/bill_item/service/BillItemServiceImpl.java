@@ -4,6 +4,7 @@ import java.util.List;
 
 import javax.annotation.Resource;
 
+import org.eclipse.jdt.internal.compiler.env.IBinaryNestedType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,4 +39,12 @@ public class BillItemServiceImpl {
 	public int getBillNum(String month,String id) {
 		return this.billItemDaoImpl.getBillNum(month,id);
 	}
+	public List<BillItem> getBillItemListOrderByDay(int year,int month,int day,int userId) {
+		return this.billItemDaoImpl.getBillItemListOrderByDay(year, month, day, userId);
+		
+	}
+	public List<Integer> getBillItemMark(int year,int month,int userId){
+		return this.billItemDaoImpl.getBillItemMark(year, month, userId);
+	}
+
 }
